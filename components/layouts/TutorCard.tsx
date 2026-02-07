@@ -43,7 +43,7 @@ const TutorCard = ({ tutor, className, compact = false }: TutorCardProps) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <Link href={`/tutors/${tutor.id}`} className="absolute inset-0 z-10" />
+      <Link href={`/tutor/profile/${tutor.id}`} className="absolute inset-0 z-10" />
       
       {/* Online Status Indicator */}
       {tutor.isOnline && (
@@ -146,25 +146,9 @@ const TutorCard = ({ tutor, className, compact = false }: TutorCardProps) => {
           </span>
           <span className="text-xs text-muted-foreground">Starting from</span>
         </div>
-
-        {/* Action Buttons */}
-        <div className="flex items-center gap-2 z-20 relative">
-          <button 
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              // Handle message action
-            }}
-            className={cn(
-              "flex items-center justify-center rounded-full border border-input bg-background hover:bg-muted transition-colors",
-              compact ? "h-8 w-8" : "h-10 w-10"
-            )}
-          >
-            <MessageSquare className="h-4 w-4" />
-          </button>
           
           <Link
-            href={`/tutors/${tutor.id}`}
+            href={`/tutor/profile/${tutor.id}`}
             onClick={(e) => e.stopPropagation()}
             className={cn(
               "flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-purple-600 text-white hover:opacity-90 transition-opacity font-medium",
@@ -176,7 +160,6 @@ const TutorCard = ({ tutor, className, compact = false }: TutorCardProps) => {
           </Link>
         </div>
       </div>
-    </div>
   );
 };
 
