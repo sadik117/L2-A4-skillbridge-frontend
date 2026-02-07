@@ -1,5 +1,9 @@
+import RegisterForm from "@/components/authentication/registrationForm";
+
 export default function SignUpPage() {
     return (
-        <div>This is signup page</div>
+        <div>
+            <RegisterForm></RegisterForm>
+        </div>
     );
 }

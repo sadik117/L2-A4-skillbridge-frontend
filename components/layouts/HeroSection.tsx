@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface HeroSectionProps {
   className?: string;
@@ -79,7 +80,7 @@ const HeroSection = ({ className }: HeroSectionProps) => {
             </h1>
 
             {/* Description - Responsive */}
-            <p className="text-base  md:text-lg text-muted-foreground mb-6 sm:mb-8 md:mb-12 max-w-2xl mx-auto lg:mx-0">
+            <p className="text-xs md:text-md  text-muted-foreground mb-6 md:mb-10 max-w-2xl mx-auto lg:mx-0">
               Find the perfect tutor for your learning journey. Personalized
               sessions at your pace with industry experts and top-rated
               educators.
@@ -102,7 +103,7 @@ const HeroSection = ({ className }: HeroSectionProps) => {
                 >
                   <span className="font-semibold hidden sm:inline">Search</span>
                   <Search className="h-4 w-4 sm:hidden" />
-                  <ArrowRight className="ml-2 h-3 w-3 sm:h-4 sm:w-4 hidden sm:block" />
+                  <ArrowRight className="ml-1 h-3 w-3 sm:h-4 sm:w-4 hidden sm:block" />
                 </Button>
               </div>
 
@@ -275,13 +276,12 @@ const HeroSection = ({ className }: HeroSectionProps) => {
                 </p>
               </div>
             </div>
-            <Button
-              size="sm"
-              className="rounded-full bg-gradient-to-r from-primary to-purple-600 hover:opacity-90 w-full sm:w-auto px-4 sm:px-6 md:px-8 text-xs sm:text-sm md:text-base"
-            >
-              Get Started
-              <ArrowRight className="ml-2 h-3 w-3 sm:h-4 sm:w-4" />
-            </Button>
+            <Link href="/browse-tutors">
+              <Button className="rounded-full bg-gradient-to-r from-primary to-purple-600 hover:opacity-90 w-full sm:w-auto px-4 md:px-8 text-xs md:text-base">
+                Get Started
+                <ArrowRight className="ml-1 h-2 w-2 sm:h-3 sm:w-3" />
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
