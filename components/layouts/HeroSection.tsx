@@ -1,6 +1,15 @@
 "use client";
 
-import { Search, Sparkles, Star, Users, Shield, ArrowRight, BookOpen, GraduationCap } from "lucide-react";
+import {
+  Search,
+  Sparkles,
+  Star,
+  Users,
+  Shield,
+  ArrowRight,
+  BookOpen,
+  GraduationCap,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -17,13 +26,19 @@ const HeroSection = ({ className }: HeroSectionProps) => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/tutors?search=${encodeURIComponent(searchQuery)}`);
+      router.push(`/tutor?search=${encodeURIComponent(searchQuery)}`);
     }
   };
 
   const popularSearches = [
-    "Calculus", "Programming", "Physics", "Chemistry", 
-    "Spanish", "Web Dev", "Statistics", "ML"
+    "Calculus",
+    "Programming",
+    "Physics",
+    "Chemistry",
+    "Spanish",
+    "Web Dev",
+    "Statistics",
+    "AI & Machine Learning",
   ];
 
   const subjects = [
@@ -34,12 +49,14 @@ const HeroSection = ({ className }: HeroSectionProps) => {
   ];
 
   return (
-    <section className={cn("relative overflow-hidden py-6 md:py-10", className)}>
+    <section
+      className={cn("relative overflow-hidden py-6 md:py-10", className)}
+    >
       {/* Background Gradients - Responsive */}
       <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-background" />
       <div className="absolute top-1/4 left-1/4 w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 bg-purple-500/10 rounded-full blur-2xl sm:blur-3xl" />
       <div className="absolute bottom-1/4 right-1/4 w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 bg-blue-500/10 rounded-full blur-2xl sm:blur-3xl" />
-      
+
       <div className="container relative mx-auto px-4 sm:px-6">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8 md:gap-12 lg:gap-16">
           {/* Left Content */}
@@ -62,8 +79,10 @@ const HeroSection = ({ className }: HeroSectionProps) => {
             </h1>
 
             {/* Description - Responsive */}
-            <p className="text-base text-md md:text-xl text-muted-foreground mb-6 sm:mb-8 md:mb-12 max-w-2xl mx-auto lg:mx-0">
-              Find the perfect tutor for your learning journey. Personalized sessions at your pace with industry experts and top-rated educators.
+            <p className="text-base  md:text-lg text-muted-foreground mb-6 sm:mb-8 md:mb-12 max-w-2xl mx-auto lg:mx-0">
+              Find the perfect tutor for your learning journey. Personalized
+              sessions at your pace with industry experts and top-rated
+              educators.
             </p>
 
             {/* Search Form - Responsive */}
@@ -89,14 +108,20 @@ const HeroSection = ({ className }: HeroSectionProps) => {
 
               {/* Popular Searches - Responsive */}
               <div className="mt-4 sm:mt-6">
-                <p className="text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3">Popular searches:</p>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3">
+                  Popular searches:
+                </p>
                 <div className="flex flex-wrap justify-center lg:justify-start gap-1.5 sm:gap-2">
                   {popularSearches.map((subject) => (
                     <button
                       key={subject}
                       type="button"
-                      onClick={() => setSearchQuery(subject)}
-                      className="px-2.5 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 text-xs sm:text-sm rounded-full border border-input bg-background hover:bg-muted hover:border-primary/30 transition-all duration-200 whitespace-nowrap"
+                      onClick={() =>
+                        router.push(
+                          `/tutor?search=${encodeURIComponent(subject)}`,
+                        )
+                      }
+                      className="px-3 py-1.5 text-xs rounded-full border hover:bg-muted"
                     >
                       {subject}
                     </button>
@@ -107,47 +132,69 @@ const HeroSection = ({ className }: HeroSectionProps) => {
           </div>
 
           {/* Right Content - Hero Illustration */}
-          <div className="w-full lg:w-1/2 relative mt-8 lg:mt-0">
+          <div className="w-full lg:w-1/2 relative -mt-8 md:mt-0">
             {/* Main Illustration Container */}
             <div className="relative w-full h-[280px] sm:h-[350px] md:h-[400px] lg:h-[450px] xl:h-[500px]">
               {/* Floating Tutor Cards - Responsive Positioning */}
               <div className="absolute top-0 left-0 sm:top-4 sm:-left-4 md:-top-6 md:-left-6 w-32 h-24 sm:w-40 sm:h-32 md:w-48 md:h-36 bg-gradient-to-br from-primary/10 to-purple-600/10 rounded-xl sm:rounded-2xl border border-primary/20 backdrop-blur-sm p-3 sm:p-4 shadow-xl rotate-3 animate-float-slow">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-r from-primary to-purple-600 flex items-center justify-center">
-                    <span className="text-white font-bold text-xs sm:text-sm">JD</span>
+                    <span className="text-white font-bold text-xs sm:text-sm">
+                      JD
+                    </span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-xs sm:text-sm truncate">John Doe</p>
-                    <p className="text-[10px] sm:text-xs text-muted-foreground truncate">Math Expert</p>
+                    <p className="font-semibold text-xs sm:text-sm truncate">
+                      John Doe
+                    </p>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
+                      Math Expert
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-2 w-2 sm:h-3 sm:w-3 fill-amber-400 text-amber-400" />
+                      <Star
+                        key={i}
+                        className="h-2 w-2 sm:h-3 sm:w-3 fill-amber-400 text-amber-400"
+                      />
                     ))}
                   </div>
-                  <span className="text-[10px] sm:text-xs font-medium ml-1">4.9/5</span>
+                  <span className="text-[10px] sm:text-xs font-medium ml-1">
+                    4.9/5
+                  </span>
                 </div>
               </div>
 
               <div className="absolute bottom-0 right-0 sm:bottom-4 sm:-right-4 md:-bottom-6 md:-right-6 w-32 h-24 sm:w-40 sm:h-32 md:w-48 md:h-36 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-xl sm:rounded-2xl border border-blue-500/20 backdrop-blur-sm p-3 sm:p-4 shadow-xl -rotate-3 animate-float">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
-                    <span className="text-white font-bold text-xs sm:text-sm">SJ</span>
+                    <span className="text-white font-bold text-xs sm:text-sm">
+                      SJ
+                    </span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-xs sm:text-sm truncate">Sarah Jane</p>
-                    <p className="text-[10px] sm:text-xs text-muted-foreground truncate">Science Tutor</p>
+                    <p className="font-semibold text-xs sm:text-sm truncate">
+                      Sarah Jane
+                    </p>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
+                      Science Tutor
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-2 w-2 sm:h-3 sm:w-3 fill-amber-400 text-amber-400" />
+                      <Star
+                        key={i}
+                        className="h-2 w-2 sm:h-3 sm:w-3 fill-amber-400 text-amber-400"
+                      />
                     ))}
                   </div>
-                  <span className="text-[10px] sm:text-xs font-medium ml-1">5.0/5</span>
+                  <span className="text-[10px] sm:text-xs font-medium ml-1">
+                    5.0/5
+                  </span>
                 </div>
               </div>
 
@@ -160,7 +207,7 @@ const HeroSection = ({ className }: HeroSectionProps) => {
                       <GraduationCap className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-white" />
                     </div>
                   </div>
-                  
+
                   {/* Orbiting Subjects */}
                   {subjects.map((subject, i) => (
                     <div
@@ -168,11 +215,15 @@ const HeroSection = ({ className }: HeroSectionProps) => {
                       className="absolute w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-background border-2 border-white shadow-lg flex items-center justify-center animate-orbit"
                       style={{
                         animationDelay: `${i * 0.5}s`,
-                        animationDuration: '20s',
+                        animationDuration: "20s",
                       }}
                     >
-                      <div className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-br ${subject.color} flex items-center justify-center`}>
-                        <span className="text-white font-bold text-xs sm:text-sm md:text-base">{subject.icon}</span>
+                      <div
+                        className={`w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-br ${subject.color} flex items-center justify-center`}
+                      >
+                        <span className="text-white font-bold text-xs sm:text-sm md:text-base">
+                          {subject.icon}
+                        </span>
                       </div>
                     </div>
                   ))}
@@ -198,41 +249,41 @@ const HeroSection = ({ className }: HeroSectionProps) => {
                   <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-primary" />
                 </div>
               </div>
-              
+
               <div className="absolute bottom-4 right-4 sm:bottom-8 sm:right-8 animate-bounce-slow">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30 backdrop-blur-sm flex items-center justify-center">
                   <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-blue-500" />
                 </div>
               </div>
-            </div> 
+            </div>
           </div>
         </div>
 
         {/* CTA Section - Responsive */}
-            <div>
-              <div className="inline-flex flex-col sm:flex-row items-center gap-3 sm:gap-4 md:gap-6 p-4 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl bg-gradient-to-r from-background to-muted/30 border border-border shadow-lg w-full sm:w-auto">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-r from-primary to-purple-600 flex items-center justify-center flex-shrink-0">
-                    <Users className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-                  </div>
-                  <div className="text-left min-w-0">
-                    <p className="font-bold text-sm sm:text-base md:text-lg truncate">
-                      Top-rated tutors are waiting for you
-                    </p>
-                    <p className="text-xs sm:text-sm text-muted-foreground truncate">
-                      Book your first session today
-                    </p>
-                  </div>
-                </div>
-                <Button 
-                  size="sm" 
-                  className="rounded-full bg-gradient-to-r from-primary to-purple-600 hover:opacity-90 w-full sm:w-auto px-4 sm:px-6 md:px-8 text-xs sm:text-sm md:text-base"
-                >
-                  Get Started
-                  <ArrowRight className="ml-2 h-3 w-3 sm:h-4 sm:w-4" />
-                </Button>
+        <div>
+          <div className="inline-flex flex-col sm:flex-row items-center gap-3 sm:gap-4 md:gap-6 p-4 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl bg-gradient-to-r from-background to-muted/30 border border-border shadow-lg w-full sm:w-auto mt-4 md:-mt-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-r from-primary to-purple-600 flex items-center justify-center flex-shrink-0">
+                <Users className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+              </div>
+              <div className="text-left min-w-0">
+                <p className="font-bold text-sm sm:text-base md:text-lg truncate">
+                  Top-rated tutors are waiting for you
+                </p>
+                <p className="text-xs sm:text-sm text-muted-foreground truncate">
+                  Book your first session today
+                </p>
               </div>
             </div>
+            <Button
+              size="sm"
+              className="rounded-full bg-gradient-to-r from-primary to-purple-600 hover:opacity-90 w-full sm:w-auto px-4 sm:px-6 md:px-8 text-xs sm:text-sm md:text-base"
+            >
+              Get Started
+              <ArrowRight className="ml-2 h-3 w-3 sm:h-4 sm:w-4" />
+            </Button>
+          </div>
+        </div>
       </div>
     </section>
   );

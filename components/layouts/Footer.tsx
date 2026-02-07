@@ -105,6 +105,7 @@ const Footer = ({ className }: FooterProps) => {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
                   required
+                  suppressHydrationWarning
                   className="w-full h-10 sm:h-12 pl-9 sm:pl-12 pr-4 rounded-full border border-input bg-background text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
