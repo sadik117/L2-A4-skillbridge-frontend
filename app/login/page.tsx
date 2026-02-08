@@ -4,7 +4,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Sign In | SkillBridge",
+  title: "SkillBridge | Sign In",
   description: "Sign in to your SkillBridge account to continue learning",
 };
 

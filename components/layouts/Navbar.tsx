@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import {
   Menu,
   Home,
@@ -10,10 +11,8 @@ import {
   GraduationCap,
   LogOut,
   User,
-  X,
-  Cuboid,
-  CuboidIcon,
   PenBoxIcon,
+  ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,80 +21,63 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  SheetFooter,
 } from "@/components/ui/sheet";
+import { Separator } from "@/components/ui/separator";
 import navLogo from "@/public/nav-logo.png";
 import { ModeToggle } from "./ModeToggle";
 import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
+import { useAuthStore } from "../hooks/useAuthStore";
 
 export const Navbar = () => {
-  const [user, setUser] = useState<{
-    name?: string;
-    email?: string;
-    role?: string;
-  } | null>(null);
+  const { user, setUser, logout } = useAuthStore();
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
 
-  // Check screen size
   useEffect(() => {
-    const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 1024);
-    };
-
-    checkScreenSize();
-    window.addEventListener("resize", checkScreenSize);
-
-    return () => window.removeEventListener("resize", checkScreenSize);
-  }, []);
-
-  // Check user on mount
-  useEffect(() => {
-    const getUser = async () => {
+    const loadSession = async () => {
       try {
         const { data } = await authClient.getSession();
-        if (data?.user) setUser(data.user);
+        setUser(data?.user ?? null);
       } catch {
         setUser(null);
       }
     };
-    getUser();
+    loadSession();
+  }, [setUser]);
 
-    const handleScroll = () => setScrolled(window.scrollY > 10);
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const logout = async () => {
-    await authClient.signOut();
-    setUser(null);
+  const handleLogout = async () => {
+    await logout();
+    toast.success("Logged out successfully");
     setIsMobileMenuOpen(false);
-    window.location.href = "/";
   };
 
   const navigation = [
-    {
-      title: "Home",
-      href: "/",
-      icon: <Home className="h-4 w-4 md:h-5 md:w-5" />,
-    },
+    { title: "Home", href: "/", icon: <Home className="h-4 w-4" /> },
     {
       title: "Browse Tutors",
       href: "/browse-tutors",
-      icon: <GraduationCap className="h-4 w-4 md:h-5 md:w-5" />,
+      icon: <GraduationCap className="h-4 w-4" />,
     },
     {
       title: "Book Sessions",
-      href: "/browse-tutors",
-      icon: <BookOpen className="h-4 w-4 md:h-5 md:w-5" />,
+      href: "/book-sessions", 
+      icon: <BookOpen className="h-4 w-4" />,
     },
-    
-    ...(user?.role && user.role !== "TUTOR"
+    ...(user && user?.role !== "TUTOR"
       ? [
           {
             title: "Become a Tutor",
             href: "/become-tutor",
-            icon: <PenBoxIcon className="h-4 w-4 md:h-5 md:w-5" />,
+            icon: <PenBoxIcon className="h-4 w-4" />,
           },
         ]
       : []),
@@ -103,256 +85,158 @@ export const Navbar = () => {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 ${scrolled ? "shadow-sm" : ""}`}
+      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
+        scrolled 
+          ? "border-b bg-background/80 backdrop-blur-md py-2" 
+          : "bg-transparent py-4"
+      }`}
     >
-      <div className="container mx-auto px-4 sm:px-6">
-        <div className="flex h-14 sm:h-16 md:h-18 items-center justify-between">
-          {/* Logo - Responsive sizing */}
-          <Link
-            href="/"
-            className="flex items-center gap-2 sm:gap-3 flex-shrink-0"
+      <div className="container mx-auto px-4 md:px-6">
+        <div className="flex items-center justify-between">
+          {/* Logo Section */}
+          <Link 
+            href="/" 
+            className="flex items-center gap-2 transition-transform hover:scale-105 active:scale-95"
           >
-            <Image
-              src={navLogo}
-              alt="Logo"
-              width={32}
-              height={32}
-              className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10"
-            />
-            <span className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+            <div className="relative h-9 w-9 overflow-hidden rounded-xl bg-primary/10 p-1">
+              <Image src={navLogo} alt="Logo" fill className="object-contain p-1" />
+            </div>
+            <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-primary via-purple-500 to-indigo-600 bg-clip-text text-transparent">
               SkillBridge
             </span>
           </Link>
 
-          {/* Desktop Navigation - Hidden on mobile */}
-          <nav className="hidden lg:flex items-center gap-2 mx-4 flex-grow justify-center">
-            {navigation.map((item) => (
-              <Link
-                key={item.title}
-                href={item.href}
-                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-md hover:bg-accent"
-              >
-                {item.icon} {item.title}
-              </Link>
-            ))}
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center gap-1 bg-muted/50 px-2 py-1.5 rounded-full border border-border/40">
+            {navigation.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.title}
+                  href={item.href}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    isActive 
+                      ? "bg-background text-primary shadow-sm" 
+                      : "text-muted-foreground hover:text-foreground hover:bg-background/50"
+                  }`}
+                >
+                  {item.icon}
+                  {item.title}
+                </Link>
+              );
+            })}
           </nav>
 
-          {/* Auth buttons - Responsive layout */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          {/* Action Buttons */}
+          <div className="flex items-center gap-3">
             <div className="hidden sm:block">
-              <ModeToggle />
+               <ModeToggle />
             </div>
 
-            {user ? (
-              <>
-                {/* User info - responsive display */}
-                <div className="hidden md:flex items-center gap-3">
-                  <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent">
-                    <User className="h-4 w-4" />
-                    <span className="font-medium text-sm">
-                      {user.name?.split(" ")[0] || "User"}
-                    </span>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    asChild
-                    className="hidden lg:inline-flex"
-                  >
+            <div className="hidden md:flex items-center gap-2">
+              {user ? (
+                <>
+                  <Button asChild variant="ghost" className="rounded-full">
                     <Link href="/dashboard">Dashboard</Link>
                   </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={logout}
-                    className="hidden md:inline-flex"
+                  <Button 
+                    onClick={handleLogout} 
+                    variant="destructive" 
+                    size="sm" 
+                    className="rounded-full px-5"
                   >
-                    <LogOut className="h-4 w-4 mr-1" />
-                    <span className="hidden lg:inline">Logout</span>
+                    Logout
                   </Button>
-                </div>
-
-                {/* Mobile user button */}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="md:hidden"
-                  asChild
-                >
-                  <Link href="/dashboard">
-                    <User className="h-5 w-5" />
-                  </Link>
-                </Button>
-              </>
-            ) : (
-              <>
-                {/* Desktop auth buttons */}
-                <div className="hidden md:flex items-center gap-2">
-                  <Button variant="ghost" size="sm" asChild>
-                    <Link href="/login">Login</Link>
+                </>
+              ) : (
+                <>
+                  <Button asChild variant="ghost" className="rounded-full font-medium">
+                    <Link href="/login">Log in</Link>
                   </Button>
-                  <Button
-                    size="sm"
-                    asChild
-                    className="bg-purple-600 text-white hover:bg-purple-700"
-                  >
-                    <Link href="/signup">Sign Up</Link>
+                  <Button asChild className="rounded-full px-6 shadow-lg shadow-primary/20 transition-all hover:shadow-primary/40 active:scale-95 bg-gradient-to-r from-primary to-blue-600 hover:opacity-90">
+                    <Link href="/signup">Join Now</Link>
                   </Button>
-                </div>
-
-                {/* Mobile auth buttons */}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  asChild
-                  className="md:hidden px-2"
-                >
-                  <Link href="/login">
-                    <span className="sr-only sm:not-sr-only">Login</span>
-                  </Link>
-                </Button>
-              </>
-            )}
-
-            {/* Mobile Mode Toggle */}
-            <div className="sm:hidden">
-              <ModeToggle />
+                </>
+              )}
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Trigger */}
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="lg:hidden flex-shrink-0"
-                  aria-label="Menu"
-                >
+                <Button variant="outline" size="icon" className="lg:hidden rounded-full border-2">
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent
-                side="right"
-                className="w-full sm:w-[350px] p-0"
-                onCloseAutoFocus={(e) => e.preventDefault()}
-              >
-                <div className="flex flex-col h-full">
-                  <SheetHeader className="border-b p-4">
-                    <div className="flex items-center justify-between">
-                      <SheetTitle className="flex items-center gap-3">
-                        <Image
-                          src={navLogo}
-                          alt="Logo"
-                          width={32}
-                          height={32}
-                        />
-                        <span className="text-lg font-semibold">
-                          SkillBridge
-                        </span>
-                      </SheetTitle>
-                    </div>
-                  </SheetHeader>
 
-                  <div className="flex-1 overflow-y-auto p-4">
-                    {/* User info in mobile menu */}
-                    {user && (
-                      <div className="mb-6 p-3 rounded-lg bg-accent">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                            <User className="h-5 w-5" />
-                          </div>
-                          <div>
-                            <p className="font-medium">{user.name || "User"}</p>
-                            <p className="text-sm text-muted-foreground">
-                              {user.email}
-                            </p>
-                          </div>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px] flex flex-col">
+                <SheetHeader className="text-left pb-6">
+                  <SheetTitle className="flex items-center gap-2">
+                    <Image src={navLogo} alt="Logo" width={28} height={28} />
+                    SkillBridge
+                  </SheetTitle>
+                </SheetHeader>
+
+                {/* Mobile Navigation Links */}
+                <div className="flex flex-col gap-1 flex-1">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-2">Navigation</p>
+                  {navigation.map((item) => (
+                    <Link
+                      key={item.title}
+                      href={item.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center justify-between group px-4 py-3 rounded-xl transition-colors hover:bg-accent"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                          {item.icon}
+                        </div>
+                        <span className="font-medium text-sm">{item.title}</span>
+                      </div>
+                      <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-all transform translate-x-[-10px] group-hover:translate-x-0" />
+                    </Link>
+                  ))}
+                </div>
+
+                {/* Mobile Footer Section */}
+                <div className="mt-auto space-y-4 pt-6">
+                  <Separator />
+                  <div className="flex items-center justify-between px-2">
+                    <span className="text-sm font-medium">Theme</span>
+                    <ModeToggle />
+                  </div>
+                  {user ? (
+                    <div className="space-y-3 px-2 pb-4">
+                      <div className="flex items-center gap-3 p-3 rounded-xl bg-accent/50 border border-border">
+                        <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-primary to-purple-600 flex items-center justify-center text-white font-bold">
+                          {user.name?.[0] || "U"}
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-bold truncate max-w-[150px]">{user.name}</span>
+                          <span className="text-xs text-muted-foreground italic uppercase">{user.role}</span>
                         </div>
                       </div>
-                    )}
-
-                    {/* Mobile Navigation Links */}
-                    <div className="space-y-1">
-                      {navigation.map((item) => (
-                        <Link
-                          key={item.title}
-                          href={item.href}
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-accent transition-colors text-base font-medium"
-                        >
-                          <span className="text-primary">{item.icon}</span>
-                          {item.title}
-                        </Link>
-                      ))}
+                      <Button asChild className="w-full rounded-xl py-6" variant="outline">
+                        <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>Go to Dashboard</Link>
+                      </Button>
+                      <Button variant="destructive" className="w-full rounded-xl py-6" onClick={handleLogout}>
+                        <LogOut className="mr-2 h-4 w-4" /> Sign Out
+                      </Button>
                     </div>
-
-                    {/* Divider */}
-                    <div className="my-6 border-t" />
-
-                    {/* Auth section in mobile menu */}
-                    <div className="space-y-3">
-                      {user ? (
-                        <>
-                          <Button
-                            asChild
-                            className="w-full"
-                            onClick={() => setIsMobileMenuOpen(false)}
-                          >
-                            <Link href="/dashboard" className="w-full">
-                              Dashboard
-                            </Link>
-                          </Button>
-                          <Button
-                            variant="outline"
-                            className="w-full"
-                            onClick={() => {
-                              logout();
-                              setIsMobileMenuOpen(false);
-                            }}
-                          >
-                            <LogOut className="h-4 w-4 mr-2" /> Logout
-                          </Button>
-                        </>
-                      ) : (
-                        <>
-                          <Button
-                            variant="outline"
-                            asChild
-                            className="w-full"
-                            onClick={() => setIsMobileMenuOpen(false)}
-                          >
-                            <Link href="/login">Login</Link>
-                          </Button>
-                          <Button
-                            asChild
-                            className="w-full bg-purple-600 text-white hover:bg-purple-700"
-                            onClick={() => setIsMobileMenuOpen(false)}
-                          >
-                            <Link href="/signup">Sign Up</Link>
-                          </Button>
-                        </>
-                      )}
+                  ) : (
+                    <div className="grid grid-cols-2 gap-3 px-2 pb-4">
+                      <Button asChild variant="outline" className="rounded-xl">
+                        <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>Login</Link>
+                      </Button>
+                      <Button asChild className="rounded-xl shadow-md bg-gradient-to-r from-primary to-blue-600 hover:opacity-90">
+                        <Link href="/signup" onClick={() => setIsMobileMenuOpen(false)}>Sign Up</Link>
+                      </Button>
                     </div>
-                  </div>
+                  )}
                 </div>
               </SheetContent>
             </Sheet>
           </div>
         </div>
-
-        {/* Tablet Navigation - Show on md screens only */}
-        <nav className="lg:hidden md:flex hidden items-center justify-center gap-4 py-3 border-t">
-          {navigation.map((item) => (
-            <Link
-              key={item.title}
-              href={item.href}
-              className="flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-md hover:bg-accent flex-1 justify-center"
-            >
-              {item.icon}
-              <span className="hidden sm:inline">{item.title}</span>
-            </Link>
-          ))}
-        </nav>
       </div>
     </header>
   );

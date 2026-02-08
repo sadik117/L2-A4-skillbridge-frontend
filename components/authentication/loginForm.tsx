@@ -1,4 +1,4 @@
-// components/auth/LoginForm.tsx - FIXED VERSION
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -15,8 +15,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { useAuthStore } from "../hooks/useAuthStore";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -29,51 +37,50 @@ export default function LoginForm() {
     setMounted(true);
   }, []);
 
-  const form = useForm({
-    defaultValues: {
-      email: "",
-      password: "",
-      rememberMe: false,
-    },
-    validatorAdapter: zodValidator,
-    onSubmit: async ({ value }) => {
-      setIsLoading(true);
-      try {
-        const { data, error } = await authClient.signIn.email({
-          email: value.email,
-          password: value.password,
-          rememberMe: value.rememberMe,
-        });
+const form = useForm({
+  defaultValues: {
+    email: "",
+    password: "",
+    rememberMe: false,
+  },
+  validatorAdapter: zodValidator,
+  onSubmit: async ({ value }) => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await authClient.signIn.email({
+        email: value.email,
+        password: value.password,
+        rememberMe: value.rememberMe,
+      });
 
-        if (error) {
-          throw new Error(error.message);
-        }
-
-        if (data?.user) {
-          toast.success("Welcome back!", {
-            description: `You've successfully logged in as ${data.user.name}`,
-            icon: <Shield className="h-5 w-5 text-green-500" />,
-          });
-          
-          setTimeout(() => {
-            router.push("/");
-          }, 1000);
-        }
-      } catch (err: any) {
-        toast.error("Login failed", {
-          description: err.message || "Please check your credentials",
-        });
-      } finally {
-        setIsLoading(false);
+      if (error) {
+        throw new Error(error.message);
       }
-    },
-  });
 
-  const handleSocialLogin = (provider: "google" | "github") => {
-    toast.info("Coming soon!", {
-      description: `Social login with ${provider} will be available soon`,
-    });
-  };
+      if (data?.user) {
+
+        useAuthStore.getState().setUser(data.user);
+
+        toast.success("Welcome back!", {
+          description: `You've successfully logged in ${data.user.name}`,
+          icon: <Shield className="h-5 w-5 text-green-500" />,
+        });
+
+        router.replace("/"); 
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to sign in");
+    } finally {
+      setIsLoading(false);
+    }
+  },
+});
+
+const handleSocialLogin = (provider: "google" | "github") => {
+  toast.info("Coming soon!", {
+    description: `Social login with ${provider} will be available soon`,
+  });
+};
 
   // Prevent hydration mismatch by using mounted state
   if (!mounted) {
@@ -321,21 +328,15 @@ export default function LoginForm() {
             Sign up now
           </Link>
         </div>
-        
+
         <div className="text-center text-xs text-muted-foreground px-4">
           <p>
             By signing in, you agree to our{" "}
-            <Link
-              href="/terms"
-              className="text-primary hover:underline"
-            >
+            <Link href="/terms" className="text-primary hover:underline">
               Terms of Service
             </Link>{" "}
             and{" "}
-            <Link
-              href="/privacy"
-              className="text-primary hover:underline"
-            >
+            <Link href="/privacy" className="text-primary hover:underline">
               Privacy Policy
             </Link>
           </p>

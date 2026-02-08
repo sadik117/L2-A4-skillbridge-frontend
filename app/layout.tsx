@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Navbar } from "@/components/layouts/Navbar";
 import { Footer } from "@/components/layouts/Footer";
 import { Toaster } from "sonner";
-import { AuthProvider } from "@/components/providers/authProvider";
+import { AuthInit } from "@/components/hooks/authInit";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,6 +22,9 @@ export const metadata: Metadata = {
   description: "This is a learning platform that connects students with tutors for personalized learning experiences.",
 };
 
+export const dynamic = "force-dynamic";
+
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -32,6 +35,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <AuthInit/>
         <ThemeProvider
             attribute="class"
             defaultTheme="dark"
