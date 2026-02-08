@@ -41,12 +41,15 @@ export const Navbar = () => {
       try {
         const { data } = await authClient.getSession();
         setUser(data?.user ?? null);
+        // console.log({data});
       } catch {
         setUser(null);
       }
     };
     loadSession();
   }, [setUser]);
+
+
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
