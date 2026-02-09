@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GraduationCap, Loader2 } from "lucide-react";
 import { env } from "@/env";
-import { authClient } from "@/lib/auth-client";
 
 export default function BecomeTutorPage() {
   const router = useRouter();

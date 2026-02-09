@@ -1,30 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
-  Star,
   MapPin,
   Clock,
   BookOpen,
-  Award,
   Calendar,
-  MessageSquare,
-  Globe,
-  GraduationCap,
-  CheckCircle,
   ChevronLeft,
   Share2,
   Bookmark,
+  Check,
+  CalendarCheck,
+  Loader2,
 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useRouter } from "next/navigation";
-import BookingModal from "@/components/layouts/BookingModal";
 
-// Helper to format time nicely
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import { toast } from "sonner";
+import { env } from "@/env";
+import { cn } from "@/lib/utils";
+import { authClient } from "@/lib/auth-client";
+
 const formatTime = (dateStr: string) =>
   new Date(dateStr).toLocaleTimeString([], {
     hour: "2-digit",
@@ -32,52 +34,52 @@ const formatTime = (dateStr: string) =>
   });
 
 interface TutorProfileProps {
-  tutor: {
-    id: string;
-    user: {
-      name: string;
-      email: string;
-      avatar?: string | null;
-    } | null;
-    category: {
-      name: string;
-      slug: string;
-    } | null;
-    bio?: string;
-    hourlyRate?: number;
-    rating?: number;
-    reviewCount?: number;
-    subjects?: string[];
-    location?: string;
-    experience?: number;
-    education?: {
-      degree: string;
-      institution: string;
-      year: string;
-    }[];
-    availability?: {
-      id: string;
-      daysOfWeek: string[];
-      startTime: string;
-      endTime: string;
-    }[];
-    languages?: string[];
-    teachingStyle?: string;
-    achievements?: string[];
-    reviews?: {
-      id: string;
-      student: { name: string };
-      rating: number;
-      comment: string;
-      createdAt: string;
-    }[];
-  } | null;
+  tutor: any;
 }
 
-const TutorProfile = ({ tutor }: TutorProfileProps) => {
+const TutorProfile = ({ tutor}: TutorProfileProps) => {
+  const API = env.NEXT_PUBLIC_FRONTEND_API_URL;
   const router = useRouter();
-  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  
+
+  const [darkMode, setDarkMode] = useState(false);
   const [activeTab, setActiveTab] = useState("about");
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const [studentId, setStudentId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const session = await authClient.getSession();
+        if (session.data?.user.id) {
+          setStudentId(session.data?.user.id);
+        }
+        console.log(session);
+      } catch (err) {
+        console.error("Failed to get session:", err);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  // console.log("Student ID:", studentId);
+
+  // detect theme
+  useEffect(() => {
+    const checkDarkMode = () =>
+      setDarkMode(document.documentElement.classList.contains("dark"));
+
+    checkDarkMode();
+
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, { attributes: true });
+
+    return () => observer.disconnect();
+  }, []);
 
   if (!tutor || !tutor.user) {
     return (
@@ -86,9 +88,6 @@ const TutorProfile = ({ tutor }: TutorProfileProps) => {
       </div>
     );
   }
-
-  const handleGoBack = () => router.back();
-  const handleBookSession = () => setIsBookingModalOpen(true);
 
   const {
     user,
@@ -101,25 +100,71 @@ const TutorProfile = ({ tutor }: TutorProfileProps) => {
     experience = 0,
     education = [],
     availability = [],
-    languages = ["Language not specified"],
-    teachingStyle = "Practical and Engaging",
-    achievements = [],
+    languages = [],
+    teachingStyle = "",
     reviews = [],
   } = tutor;
 
+
+  // Book session
+  const handleConfirmBooking = async () => {
+    if (!studentId) {
+      toast.error("Please login first");
+      router.push("/login");
+      return;
+    }
+
+    if (!selectedSlot) {
+      toast.error("Please select a slot");
+      return;
+    }
+
+    const slot = availability.find((s: any) => s.id === selectedSlot);
+
+    if (slot?.isBooked) {
+      toast.error("This slot is already booked");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      await axios.post(
+        `${API}/booking/book-session`,
+        {
+          studentId,
+          tutorId: tutor.id,
+          slotId: selectedSlot,
+        },
+        { withCredentials: true }
+      );
+
+      toast.success("Booking confirmed");
+      setIsBookingOpen(false);
+      router.refresh();
+    } catch (err: any) {
+      if (err.response?.status === 401) {
+        toast.error("Session expired. Login again.");
+        router.push("/login");
+      } else {
+        toast.error(err.response?.data?.message || "Booking failed");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
-      {/* Back Navigation */}
+      {/* Top */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Button
-            variant="ghost"
-            onClick={handleGoBack}
-            className="flex items-center gap-2"
-          >
-            <ChevronLeft className="h-4 w-4" /> Back to Tutors
+        <div className="container mx-auto px-4 py-4 flex justify-between">
+          <Button variant="ghost" onClick={() => router.back()}>
+            <ChevronLeft className="h-4 w-4 mr-2" />
+            Back
           </Button>
-          <div className="flex items-center gap-2">
+
+          <div className="flex gap-2">
             <Button variant="ghost" size="icon">
               <Bookmark className="h-5 w-5" />
             </Button>
@@ -130,260 +175,125 @@ const TutorProfile = ({ tutor }: TutorProfileProps) => {
         </div>
       </div>
 
-      {/* Main Content */}
+      {/* Layout */}
       <div className="container mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Sidebar */}
-        <div className="lg:col-span-1 space-y-6">
+        {/* LEFT */}
+        <div className="space-y-6">
           <Card className="sticky top-24">
             <CardContent className="pt-6 text-center">
-              <Avatar className="h-32 w-32 mb-4 ml-20 md:ml-0 border-4 border-background shadow-lg">
-                <AvatarImage src={user.avatar ?? "/avatar.png"} />
-                <AvatarFallback className="bg-gradient-to-br from-primary to-purple-600 text-white text-3xl">
-                  {user.name.charAt(0)}
-                </AvatarFallback>
+              <Avatar className="h-32 w-32 mb-4 ml-20 md:ml-16 border-4 border-background shadow-lg"> 
+                <AvatarImage src={user.avatar} /> <AvatarFallback className="bg-gradient-to-br from-primary to-purple-600 text-white text-3xl"> {user.name.charAt(0)} 
+                </AvatarFallback> 
               </Avatar>
+
               <h1 className="text-2xl font-bold">{user.name}</h1>
+
               <p className="text-muted-foreground flex items-center gap-1 justify-center">
                 <BookOpen className="h-4 w-4" />
                 {category?.name ?? "Uncategorized"}
               </p>
 
-              {/* Rating */}
-              <div className="flex items-center justify-center gap-2 my-3">
-                <div className="flex items-center">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`h-5 w-5 ${i < Math.floor(rating) ? "fill-amber-400 text-amber-400" : "text-muted-foreground"}`}
-                    />
-                  ))}
-                </div>
+              {/* rating */}
+              <div className="flex justify-center gap-2 my-3">
                 <span className="font-bold">{rating.toFixed(1)}</span>
                 <span className="text-muted-foreground">
                   ({reviewCount} reviews)
                 </span>
               </div>
 
-              {/* Quick Info */}
-              <div className="space-y-4 mb-6">
-                <div className="flex items-center gap-3 justify-center">
-                  <MapPin className="h-5 w-5 text-muted-foreground" />
-                  <span>{location}</span>
+              <div className="space-y-2 mb-6">
+                <div className="flex items-center justify-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  {location}
                 </div>
-                <div className="flex items-center gap-3 justify-center">
-                  <Clock className="h-5 w-5 text-muted-foreground" />
-                  <span>{experience} years experience</span>
+                <div className="flex items-center justify-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  {experience} years
                 </div>
-                <div className="flex items-center gap-1 justify-center">
-                  <Globe className="h-5 w-5 text-muted-foreground" />
-                  {languages.map((lang, i) => (
-                    <Badge key={i} variant="secondary">
-                      {lang}
-                    </Badge>
+                <div className="flex gap-1 justify-center flex-wrap">
+                  {languages.map((l: string, i: number) => (
+                    <Badge key={i}>{l}</Badge>
                   ))}
                 </div>
               </div>
 
-              {/* Price & Action Buttons */}
-              <div className="space-y-4">
-                <div className="text-center">
-                  <div className="text-3xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-                    ৳{hourlyRate}/hour
-                  </div>
-                  <p className="text-sm text-muted-foreground">Starting rate</p>
-                </div>
-                <Button
-                  onClick={handleBookSession}
-                  className="w-full h-12 text-lg bg-gradient-to-r from-primary to-purple-600 hover:opacity-90"
-                >
-                  <Calendar className="mr-2 h-5 w-5" /> Book a Session
-                </Button>
-                <Button variant="outline" className="w-full">
-                  <MessageSquare className="mr-2 h-5 w-5" /> Send Message
-                </Button>
+              <div className="text-3xl font-bold mb-4">
+                ৳{hourlyRate}/hour
               </div>
+
+              <Button onClick={() => setIsBookingOpen(true)} className="w-full">
+                <Calendar className="mr-2 h-4 w-4" />
+                Book a Session
+              </Button>
             </CardContent>
           </Card>
-
-          {/* Availability Card */}
-          {availability.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Clock className="h-5 w-5" /> Availability
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {availability.map((slot) => (
-                    <div
-                      key={slot.id}
-                      className="flex justify-between items-center border p-2 rounded"
-                    >
-                      <span>{slot.daysOfWeek.join(", ")}</span>
-                      <span>
-                        {formatTime(slot.startTime)} -{" "}
-                        {formatTime(slot.endTime)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
         </div>
 
-        {/* Main Content Tabs */}
+        {/* RIGHT */}
         <div className="lg:col-span-2">
-          <Tabs
-            value={activeTab}
-            onValueChange={setActiveTab}
-            className="w-full"
-          >
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid grid-cols-4 mb-8">
               <TabsTrigger value="about">About</TabsTrigger>
               <TabsTrigger value="subjects">Subjects</TabsTrigger>
-              <TabsTrigger value="reviews">Reviews ({reviewCount})</TabsTrigger>
+              <TabsTrigger value="reviews">
+                Reviews ({reviewCount})
+              </TabsTrigger>
               <TabsTrigger value="availability">Schedule</TabsTrigger>
             </TabsList>
 
-            {/* About Tab */}
-            <TabsContent value="about" className="space-y-6">
+            <TabsContent value="about">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <GraduationCap className="h-5 w-5" /> About Me
-                  </CardTitle>
+                  <CardTitle>About Me</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground leading-relaxed">{bio}</p>
-                  <div className="mt-6">
-                    <h3 className="font-semibold mb-4">Teaching Style</h3>
+                <CardContent className="space-y-4">
+                  <p>{bio}</p>
+                  <div>
+                    <h3 className="font-semibold">Teaching Style</h3>
                     <p className="text-muted-foreground">{teachingStyle}</p>
                   </div>
                 </CardContent>
               </Card>
-
-              {/* Education */}
-              {education.length > 0 && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Education & Qualifications</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {education.map((edu, i) => (
-                      <div key={i} className="flex items-start gap-4 mb-2">
-                        <Award className="h-5 w-5 text-primary mt-1" />
-                        <div>
-                          <h4 className="font-semibold">{edu.degree}</h4>
-                          <p className="text-muted-foreground">
-                            {edu.institution}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            {edu.year}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Achievements */}
-              {achievements.length > 0 && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Achievements</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2">
-                      {achievements.map((ach, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <CheckCircle className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
-                          <span>{ach}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              )}
             </TabsContent>
 
-            {/* Subjects Tab */}
             <TabsContent value="subjects">
               <Card>
                 <CardHeader>
-                  <CardTitle>Subjects I Teach</CardTitle>
+                  <CardTitle>Subjects</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="p-4 rounded-lg border border-border hover:border-primary/30 transition-colors">
-                      <h4 className="font-semibold mb-2">{category?.slug}</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Expert level • Customized lessons available
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
+                <CardContent>{category?.slug}</CardContent>
               </Card>
             </TabsContent>
 
-            {/* Reviews Tab */}
             <TabsContent value="reviews">
               <Card>
                 <CardHeader>
                   <CardTitle>Student Reviews</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {reviews.length > 0 ? (
-                    reviews.map((review) => (
-                      <div
-                        key={review.id}
-                        className="border-b pb-4 last:border-0"
-                      >
-                        <div className="flex justify-between items-center mb-1">
-                          <div>
-                            <h4 className="font-semibold">
-                              {review.student.name}
-                            </h4>
-                            <p className="text-sm text-muted-foreground">
-                              {new Date(review.createdAt).toLocaleDateString()}
-                            </p>
-                          </div>
-                          <div className="flex items-center">
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                className={`h-4 w-4 ${i < review.rating ? "fill-amber-400 text-amber-400" : "text-muted-foreground"}`}
-                              />
-                            ))}
-                          </div>
+                  {reviews.length
+                    ? reviews.map((r: any) => (
+                        <div key={r.id} className="mb-4">
+                          <h4 className="font-semibold">{r.student.name}</h4>
+                          <p className="text-muted-foreground">{r.comment}</p>
                         </div>
-                        <p className="text-muted-foreground">
-                          {review.comment}
-                        </p>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-muted-foreground">No reviews yet.</p>
-                  )}
+                      ))
+                    : "No reviews yet."}
                 </CardContent>
               </Card>
             </TabsContent>
 
-            {/* Availability Tab */}
             <TabsContent value="availability">
               <Card>
                 <CardHeader>
                   <CardTitle>Weekly Schedule</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {availability.length > 0 ? (
-                    <div className="space-y-2">
-                      {availability.map((slot) => (
+                  {availability.length
+                    ? availability.map((slot: any) => (
                         <div
                           key={slot.id}
-                          className="flex justify-between items-center border p-2 rounded"
+                          className="flex justify-between border p-2 rounded mb-2"
                         >
                           <span>{slot.daysOfWeek.join(", ")}</span>
                           <span>
@@ -391,13 +301,8 @@ const TutorProfile = ({ tutor }: TutorProfileProps) => {
                             {formatTime(slot.endTime)}
                           </span>
                         </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-muted-foreground">
-                      No availability set.
-                    </p>
-                  )}
+                      ))
+                    : "No availability"}
                 </CardContent>
               </Card>
             </TabsContent>
@@ -405,11 +310,67 @@ const TutorProfile = ({ tutor }: TutorProfileProps) => {
         </div>
       </div>
 
-      <BookingModal
-        isOpen={isBookingModalOpen}
-        onClose={() => setIsBookingModalOpen(false)}
-        tutor={tutor}
-      />
+      {/* ================= MODAL ================= */}
+      {isBookingOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/60"
+            onClick={() => setIsBookingOpen(false)}
+          />
+
+          <div className="relative bg-white dark:bg-gray-900 p-6 rounded-xl w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4">Select Time Slot</h2>
+
+            <div className="space-y-2 max-h-60 overflow-y-auto">
+              {availability.map((slot: any) => {
+                const disabled = slot.isBooked;
+
+                return (
+                  <div
+                    key={slot.id}
+                    onClick={() => !disabled && setSelectedSlot(slot.id)}
+                    className={cn(
+                      "p-3 rounded border flex justify-between items-center",
+                      disabled && "opacity-50 cursor-not-allowed",
+                      selectedSlot === slot.id && "border-purple-500"
+                    )}
+                  >
+                    <div>
+                      <div>{slot.daysOfWeek.join(", ")}</div>
+                      <div className="text-sm text-muted-foreground">
+                        {formatTime(slot.startTime)} -{" "}
+                        {formatTime(slot.endTime)}
+                      </div>
+                    </div>
+
+                    {selectedSlot === slot.id && (
+                      <Check className="h-4 w-4 text-purple-600" />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            <Button
+              onClick={handleConfirmBooking}
+              disabled={loading || !selectedSlot}
+              className="w-full mt-4"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Booking...
+                </>
+              ) : (
+                <>
+                  <CalendarCheck className="h-4 w-4 mr-2" />
+                  Confirm Booking
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -7,21 +7,28 @@ export const userService = {
   getSession: async function () {
     try {
       const cookieStore = await cookies();
+      const token = cookieStore.get("better-auth.session_token")?.value;
 
-      // console.log(cookieStore.toString());
+      if (!token) {
+        return { data: null, error: { message: "No session cookie found" } };
+      }
 
       const res = await fetch(`${AUTH_URL}/get-session`, {
         headers: {
-          Cookie: cookieStore.toString(),
+          Cookie: `better-auth.session_token=${token}`, 
         },
         cache: "no-store",
       });
 
+      if (!res.ok) {
+        return { data: null, error: { message: "Session fetch failed" } };
+      }
+
       const session = await res.json();
 
-      console.log(session);
+      // console.log(session);
 
-      if (session === null) {
+      if (!session) {
         return { data: null, error: { message: "Session is missing." } };
       }
 

@@ -94,26 +94,26 @@ const SidebarContent = ({
   };
 
   const studentLinks = [
-    { href: "/dashboard", label: "Overview", icon: iconMap.Overview },
-    { href: "/dashboard/bookings", label: "My Bookings", icon: iconMap["My Bookings"] },
-    { href: "/dashboard/sessions", label: "My Sessions", icon: iconMap["My Sessions"] },
-    { href: "/dashboard/profile", label: "Profile", icon: iconMap.Profile },
+    { href: "/student-dashboard", label: "Overview", icon: iconMap.Overview },
+    { href: "/student-dashboard/bookings", label: "My Bookings", icon: iconMap["My Bookings"] },
+    { href: "/student-dashboard/sessions", label: "My Sessions", icon: iconMap["My Sessions"] },
+    { href: "/student-dashboard/profile", label: "Profile", icon: iconMap.Profile },
   ];
 
   const tutorLinks = [
-    { href: "/dashboard", label: "Dashboard", icon: iconMap.Dashboard },
-    { href: "/dashboard/sessions", label: "My Sessions", icon: iconMap["My Sessions"] },
-    { href: "/dashboard/availability", label: "Availability", icon: iconMap.Availability },
-    { href: "/dashboard/bookings", label: "Bookings", icon: iconMap.Bookings },
-    { href: "/dashboard/reviews", label: "Reviews", icon: iconMap.Reviews },
+    { href: "/tutor-dashboard", label: "Dashboard", icon: iconMap.Dashboard },
+    { href: "/tutor-dashboard/sessions", label: "My Sessions", icon: iconMap["My Sessions"] },
+    { href: "/tutor-dashboard/availability", label: "Availability", icon: iconMap.Availability },
+    { href: "/tutor-dashboard/bookings", label: "Bookings", icon: iconMap.Bookings },
+    { href: "/tutor-dashboard/reviews", label: "Reviews", icon: iconMap.Reviews },
     { href: "/tutor-dashboard/profile", label: "Profile", icon: iconMap.Profile },
   ];
 
   const adminLinks = [
-    { href: "/dashboard", label: "Statistics", icon: iconMap.Statistics },
-    { href: "/dashboard/users", label: "Users", icon: iconMap.Users, badge: "New" },
-    { href: "/dashboard/bookings", label: "Bookings", icon: iconMap.Bookings },
-    { href: "/dashboard/categories", label: "Categories", icon: iconMap.Categories },
+    { href: "/admin-dashboard", label: "Statistics", icon: iconMap.Statistics },
+    { href: "/admin-dashboard/users", label: "Users", icon: iconMap.Users, badge: "New" },
+    { href: "/admin-dashboard/bookings", label: "Bookings", icon: iconMap.Bookings },
+    { href: "/admin-dashboard/add-category", label: "Categories", icon: iconMap.Categories },
   ];
 
   const links = role === "ADMIN" ? adminLinks : role === "TUTOR" ? tutorLinks : studentLinks;

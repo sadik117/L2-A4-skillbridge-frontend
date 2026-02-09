@@ -1,5 +1,6 @@
 import NotFound from "@/app/not-found";
 import TutorProfile from "@/components/pages/TutorProfile";
+import { userService } from "@/components/services/user.service";
 
 
 interface TutorProfilePageProps {
@@ -28,13 +29,11 @@ async function getTutorById(tutorId: string) {
   }
 }
 
-
 export default async function TutorProfilePage({ params }: TutorProfilePageProps) {
+  // fetch tutor
   const tutor = await getTutorById(params.tutorId);
-  
-  if (!tutor) {
-    NotFound();
-  }
-  
+  if (!tutor) return <NotFound />;
+
+
   return <TutorProfile tutor={tutor} />;
 }

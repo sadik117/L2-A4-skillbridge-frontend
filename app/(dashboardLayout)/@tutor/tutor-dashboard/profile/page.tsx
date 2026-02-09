@@ -215,7 +215,7 @@ export default function TutorProfilePage() {
                   />
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-2 mt-0 md:mt-4 ">
                   <Label className="font-semibold flex items-center gap-2">
                     <Clock className="h-4 w-4" />
                     Experience (Years)
