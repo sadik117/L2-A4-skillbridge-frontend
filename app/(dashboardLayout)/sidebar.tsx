@@ -97,8 +97,6 @@ const SidebarContent = ({
     { href: "/dashboard", label: "Overview", icon: iconMap.Overview },
     { href: "/dashboard/bookings", label: "My Bookings", icon: iconMap["My Bookings"] },
     { href: "/dashboard/sessions", label: "My Sessions", icon: iconMap["My Sessions"] },
-    { href: "/dashboard/messages", label: "Messages", icon: iconMap.Messages, badge: 3 },
-    { href: "/dashboard/payments", label: "Payments", icon: iconMap.Payments },
     { href: "/dashboard/profile", label: "Profile", icon: iconMap.Profile },
   ];
 
@@ -106,11 +104,9 @@ const SidebarContent = ({
     { href: "/dashboard", label: "Dashboard", icon: iconMap.Dashboard },
     { href: "/dashboard/sessions", label: "My Sessions", icon: iconMap["My Sessions"] },
     { href: "/dashboard/availability", label: "Availability", icon: iconMap.Availability },
-    { href: "/dashboard/bookings", label: "Bookings", icon: iconMap.Bookings, badge: 5 },
+    { href: "/dashboard/bookings", label: "Bookings", icon: iconMap.Bookings },
     { href: "/dashboard/reviews", label: "Reviews", icon: iconMap.Reviews },
-    { href: "/dashboard/messages", label: "Messages", icon: iconMap.Messages, badge: 2 },
-    { href: "/dashboard/earnings", label: "Earnings", icon: iconMap.Payments },
-    { href: "/dashboard/profile", label: "Profile", icon: iconMap.Profile },
+    { href: "/tutor-dashboard/profile", label: "Profile", icon: iconMap.Profile },
   ];
 
   const adminLinks = [
@@ -118,8 +114,6 @@ const SidebarContent = ({
     { href: "/dashboard/users", label: "Users", icon: iconMap.Users, badge: "New" },
     { href: "/dashboard/bookings", label: "Bookings", icon: iconMap.Bookings },
     { href: "/dashboard/categories", label: "Categories", icon: iconMap.Categories },
-    { href: "/dashboard/reports", label: "Reports", icon: iconMap["Session History"] },
-    { href: "/dashboard/settings", label: "Settings", icon: iconMap.Settings },
   ];
 
   const links = role === "ADMIN" ? adminLinks : role === "TUTOR" ? tutorLinks : studentLinks;
