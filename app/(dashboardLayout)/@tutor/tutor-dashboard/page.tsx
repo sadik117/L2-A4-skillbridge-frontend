@@ -1,7 +1,5 @@
-export default function TutorDashboard() {
-  return (
-    <div>
-      <h1> Tutor Dashboard </h1>
-    </div>
-  );
+export default function Page() {
+    return (
+        <div>Tutor Page</div>
+    );
 }
