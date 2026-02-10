@@ -37,10 +37,9 @@ interface TutorProfileProps {
   tutor: any;
 }
 
-const TutorProfile = ({ tutor}: TutorProfileProps) => {
+const TutorProfile = ({ tutor }: TutorProfileProps) => {
   const API = env.NEXT_PUBLIC_FRONTEND_API_URL;
   const router = useRouter();
-  
 
   const [darkMode, setDarkMode] = useState(false);
   const [activeTab, setActiveTab] = useState("about");
@@ -105,7 +104,6 @@ const TutorProfile = ({ tutor}: TutorProfileProps) => {
     reviews = [],
   } = tutor;
 
-
   // Book session
   const handleConfirmBooking = async () => {
     if (!studentId) {
@@ -136,7 +134,7 @@ const TutorProfile = ({ tutor}: TutorProfileProps) => {
           tutorId: tutor.id,
           slotId: selectedSlot,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       toast.success("Booking confirmed");
@@ -181,9 +179,12 @@ const TutorProfile = ({ tutor}: TutorProfileProps) => {
         <div className="space-y-6">
           <Card className="sticky top-24">
             <CardContent className="pt-6 text-center">
-              <Avatar className="h-32 w-32 mb-4 ml-20 md:ml-16 border-4 border-background shadow-lg"> 
-                <AvatarImage src={user.avatar} /> <AvatarFallback className="bg-gradient-to-br from-primary to-purple-600 text-white text-3xl"> {user.name.charAt(0)} 
-                </AvatarFallback> 
+              <Avatar className="h-32 w-32 mb-4 ml-20 md:ml-16 border-4 border-background shadow-lg">
+                <AvatarImage src={user.avatar} />{" "}
+                <AvatarFallback className="bg-gradient-to-br from-primary to-purple-600 text-white text-3xl">
+                  {" "}
+                  {user.name.charAt(0)}
+                </AvatarFallback>
               </Avatar>
 
               <h1 className="text-2xl font-bold">{user.name}</h1>
@@ -217,9 +218,7 @@ const TutorProfile = ({ tutor}: TutorProfileProps) => {
                 </div>
               </div>
 
-              <div className="text-3xl font-bold mb-4">
-                ৳{hourlyRate}/hour
-              </div>
+              <div className="text-3xl font-bold mb-4">৳{hourlyRate}/hour</div>
 
               <Button onClick={() => setIsBookingOpen(true)} className="w-full">
                 <Calendar className="mr-2 h-4 w-4" />
@@ -235,9 +234,7 @@ const TutorProfile = ({ tutor}: TutorProfileProps) => {
             <TabsList className="grid grid-cols-4 mb-8">
               <TabsTrigger value="about">About</TabsTrigger>
               <TabsTrigger value="subjects">Subjects</TabsTrigger>
-              <TabsTrigger value="reviews">
-                Reviews ({reviewCount})
-              </TabsTrigger>
+              <TabsTrigger value="reviews">Reviews ({reviewCount})</TabsTrigger>
               <TabsTrigger value="availability">Schedule</TabsTrigger>
             </TabsList>
 
@@ -310,7 +307,7 @@ const TutorProfile = ({ tutor}: TutorProfileProps) => {
         </div>
       </div>
 
-      {/* ================= MODAL ================= */}
+      {/* MODAL  */}
       {isBookingOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div
@@ -328,22 +325,38 @@ const TutorProfile = ({ tutor}: TutorProfileProps) => {
                 return (
                   <div
                     key={slot.id}
-                    onClick={() => !disabled && setSelectedSlot(slot.id)}
+                    onClick={() => {
+                      if (disabled) return;
+                      setSelectedSlot(slot.id);
+                    }}
                     className={cn(
-                      "p-3 rounded border flex justify-between items-center",
-                      disabled && "opacity-50 cursor-not-allowed",
-                      selectedSlot === slot.id && "border-purple-500"
+                      "p-3 rounded border flex justify-between items-center transition",
+                      disabled
+                        ? "opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-800"
+                        : "cursor-pointer hover:border-purple-400",
+                      selectedSlot === slot.id && "border-purple-500",
                     )}
                   >
                     <div>
-                      <div>{slot.daysOfWeek.join(", ")}</div>
+                      <div className="font-medium">
+                        {slot.daysOfWeek.join(", ")}
+                      </div>
+
                       <div className="text-sm text-muted-foreground">
-                        {formatTime(slot.startTime)} -{" "}
+                        {formatTime(slot.startTime)} –{" "}
                         {formatTime(slot.endTime)}
                       </div>
+
+                      {/* BOOKED MESSAGE */}
+                      {disabled && (
+                        <div className="text-xs text-red-600 dark:text-red-400 mt-1 font-semibold">
+                          Slot already booked
+                        </div>
+                      )}
                     </div>
 
-                    {selectedSlot === slot.id && (
+                    {/* ✅ CHECK ICON */}
+                    {!disabled && selectedSlot === slot.id && (
                       <Check className="h-4 w-4 text-purple-600" />
                     )}
                   </div>

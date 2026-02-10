@@ -95,14 +95,12 @@ const SidebarContent = ({
 
   const studentLinks = [
     { href: "/student-dashboard", label: "Overview", icon: iconMap.Overview },
-    { href: "/student-dashboard/bookings", label: "My Bookings", icon: iconMap["My Bookings"] },
-    { href: "/student-dashboard/sessions", label: "My Sessions", icon: iconMap["My Sessions"] },
-    { href: "/student-dashboard/profile", label: "Profile", icon: iconMap.Profile },
+    { href: "/student-dashboard/my-bookings", label: "My Bookings", icon: iconMap["My Bookings"] },
+    { href: "/student-dashboard/my-profile", label: "Profile", icon: iconMap.Profile },
   ];
 
   const tutorLinks = [
     { href: "/tutor-dashboard", label: "Dashboard", icon: iconMap.Dashboard },
-    { href: "/tutor-dashboard/sessions", label: "My Sessions", icon: iconMap["My Sessions"] },
     { href: "/tutor-dashboard/availability", label: "Availability", icon: iconMap.Availability },
     { href: "/tutor-dashboard/bookings", label: "Bookings", icon: iconMap.Bookings },
     { href: "/tutor-dashboard/reviews", label: "Reviews", icon: iconMap.Reviews },
