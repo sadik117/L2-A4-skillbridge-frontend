@@ -103,13 +103,12 @@ const SidebarContent = ({
     { href: "/tutor-dashboard", label: "Dashboard", icon: iconMap.Dashboard },
     { href: "/tutor-dashboard/availability", label: "Availability", icon: iconMap.Availability },
     { href: "/tutor-dashboard/bookings", label: "Bookings", icon: iconMap.Bookings },
-    { href: "/tutor-dashboard/reviews", label: "Reviews", icon: iconMap.Reviews },
     { href: "/tutor-dashboard/profile", label: "Profile", icon: iconMap.Profile },
   ];
 
   const adminLinks = [
     { href: "/admin-dashboard", label: "Statistics", icon: iconMap.Statistics },
-    { href: "/admin-dashboard/users", label: "Users", icon: iconMap.Users, badge: "New" },
+    { href: "/admin-dashboard/users", label: "Users", icon: iconMap.Users },
     { href: "/admin-dashboard/bookings", label: "Bookings", icon: iconMap.Bookings },
     { href: "/admin-dashboard/add-category", label: "Categories", icon: iconMap.Categories },
   ];

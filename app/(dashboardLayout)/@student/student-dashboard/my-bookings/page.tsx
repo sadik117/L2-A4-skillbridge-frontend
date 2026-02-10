@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 
-/* ---------------- TYPES ---------------- */
+/* Type declaration*/
 
 type BookingStatus = "CONFIRMED" | "PENDING" | "CANCELLED" | "COMPLETED";
 
@@ -38,7 +38,6 @@ type Booking = {
   status: BookingStatus;
   startTime: string;
   endTime: string;
-  sessionDate: string;
   subject?: string;
   notes?: string;
   tutor: {
@@ -107,21 +106,21 @@ export default function StudentBookingsPage() {
 
   /*  HELPERS  */
 
-  const safeDate = (d: string) => {
-    try {
-      return format(parseISO(d), "EEE, MMM d, yyyy");
-    } catch {
-      return "Invalid date";
-    }
-  };
+  const safeDate = (value: string | Date) => {
+  try {
+    return format(new Date(value), "EEE, MMM d, yyyy");
+  } catch {
+    return "Invalid date";
+  }
+};
 
-  const formatTime = (t: string) => {
-    try {
-      return format(parseISO(`1970-01-01T${t}`), "h:mm a");
-    } catch {
-      return t;
-    }
-  };
+const formatTime = (value: string | Date) => {
+  try {
+    return format(new Date(value), "h:mm a");
+  } catch {
+    return "Invalid time";
+  }
+};
 
   const initials = (name: string) =>
     name
@@ -146,7 +145,7 @@ export default function StudentBookingsPage() {
       const processed = data.data.map((b: Booking) => ({
         ...b,
         status:
-          b.status === "CONFIRMED" && isPast(parseISO(b.sessionDate))
+          b.status === "CONFIRMED" && isPast(parseISO(b.endTime))
             ? "COMPLETED"
             : b.status,
       }));
@@ -184,7 +183,7 @@ export default function StudentBookingsPage() {
 
     result.sort((a, b) =>
       sortBy === "date"
-        ? +new Date(b.sessionDate) - +new Date(a.sessionDate)
+        ? +new Date(b.startTime) - +new Date(a.endTime)
         : (a.tutor.profile?.hourlyRate || 0) -
           (b.tutor.profile?.hourlyRate || 0)
     );
@@ -343,7 +342,7 @@ export default function StudentBookingsPage() {
                 <div className="text-sm space-y-1">
                   <div className="flex gap-2 items-center">
                     <Calendar className="h-4 w-4" />
-                    {safeDate(b.sessionDate)}
+                    {safeDate(b.startTime)}
                   </div>
                   <div className="flex gap-2 items-center">
                     <Clock className="h-4 w-4" />
