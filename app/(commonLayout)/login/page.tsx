@@ -1,4 +1,3 @@
-// app/login/page.tsx
 import LoginForm from "@/components/authentication/loginForm";
 import { Metadata } from "next";
 import Link from "next/link";
@@ -10,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-blue-600/5">
+    <div className="min-h-screen mx-auto px-0 md:px-14 bg-gradient-to-br from-background via-primary/5 to-blue-600/5">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-grid-pattern opacity-5" />
       

@@ -39,7 +39,7 @@ export default function HowItWorksSection() {
   ];
 
   return (
-    <section className="relative overflow-hidden py-12 md:py-24 bg-background transition-colors duration-300">
+    <section className="relative overflow-hidden py-8 md:py-16 bg-background transition-colors duration-300">
       {/* Background radial glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-[radial-gradient(50%_50%_at_50%_0%,rgba(124,58,237,0.06)_0%,transparent_100%)] pointer-events-none" />
       
@@ -51,10 +51,10 @@ export default function HowItWorksSection() {
             <span className="text-sm font-medium text-primary uppercase tracking-wider">Simple Process</span>
           </div>
           
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-4 tracking-tight text-foreground">
+          <h2 className="text-xl md:text-3xl font-extrabold mb-4 tracking-tight text-foreground">
             How It <span className="text-primary">Works</span>
           </h2>
-          <p className="text-base sm:text-lg text-muted-foreground">
+          <p className="text-sm md:text-lg text-muted-foreground">
             Start learning in three simple steps. Join thousands of students who found their perfect tutor.
           </p>
         </div>

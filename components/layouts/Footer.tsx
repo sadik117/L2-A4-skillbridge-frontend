@@ -27,7 +27,7 @@ const Footer = ({ className }: FooterProps) => {
     {
       title: "Platform",
       links: [
-        { text: "Browse Tutors", url: "/tutors" },
+        { text: "Browse Tutors", url: "/browse-tutors" },
         { text: "How It Works", url: "/how-it-works" },
         { text: "For Tutors", url: "/become-tutor" },
         { text: "Pricing", url: "/pricing" },
@@ -60,21 +60,21 @@ const Footer = ({ className }: FooterProps) => {
     {
       title: "Subjects",
       links: [
-        { text: "Mathematics", url: "/tutors?subject=mathematics" },
-        { text: "Science", url: "/tutors?subject=science" },
-        { text: "Programming", url: "/tutors?subject=programming" },
-        { text: "Languages", url: "/tutors?subject=languages" },
-        { text: "Business", url: "/tutors?subject=business" },
-        { text: "Test Prep", url: "/tutors?subject=test-prep" },
+        { text: "Mathematics", url: "/tutor?search=mathematics" },
+        { text: "English", url: "/tutor?search=english" },
+        { text: "Programming", url: "/tutor?search=programming" },
+        { text: "Statistics", url: "/tutor?search=statistics" },
+        { text: "Business", url: "/tutor?search=business" },
+        { text: "Web Development", url: "/tutor?search=webdevelopment" },
       ],
     },
   ];
 
   const socialLinks = [
-    { icon: <Facebook className="h-5 w-5" />, url: "#", label: "Facebook" },
-    { icon: <Twitter className="h-5 w-5" />, url: "#", label: "Twitter" },
-    { icon: <Instagram className="h-5 w-5" />, url: "#", label: "Instagram" },
-    { icon: <Linkedin className="h-5 w-5" />, url: "#", label: "LinkedIn" },
+    { icon: <Facebook className="h-5 w-5" />, url: "https://www.facebook.com/sadiksourov11/", label: "Facebook" },
+    { icon: <Twitter className="h-5 w-5" />, url: "https://x.com/sadiksourov117", label: "Twitter" },
+    { icon: <Instagram className="h-5 w-5" />, url: "https://www.instagram.com/sadiksourov11/", label: "Instagram" },
+    { icon: <Linkedin className="h-5 w-5" />, url: "https://linkedin.com/in/sadiksourov11", label: "LinkedIn" },
   ];
 
   const trustBadges = [
@@ -280,7 +280,7 @@ const Footer = ({ className }: FooterProps) => {
                 <Button 
                   asChild 
                   variant="outline" 
-                  className="w-full sm:w-auto px-6 py-3 rounded-xl border-2 hover:border-primary/50 transition-all"
+                  className="w-full sm:w-auto px-6 py-5 rounded-xl border-2 hover:border-primary/50 transition-all"
                 >
                   <Link href="#" className="flex items-center gap-3">
                     <div className="text-2xl">📱</div>
@@ -293,7 +293,7 @@ const Footer = ({ className }: FooterProps) => {
                 <Button 
                   asChild 
                   variant="outline" 
-                  className="w-full sm:w-auto px-6 py-3 rounded-xl border-2 hover:border-primary/50 transition-all"
+                  className="w-full sm:w-auto px-6 py-5 rounded-xl border-2 hover:border-primary/50 transition-all"
                 >
                   <Link href="#" className="flex items-center gap-3">
                     <div className="text-2xl">🤖</div>
@@ -306,7 +306,7 @@ const Footer = ({ className }: FooterProps) => {
                 <Button 
                   asChild 
                   variant="outline" 
-                  className="w-full sm:w-auto px-6 py-3 rounded-xl border-2 hover:border-primary/50 transition-all"
+                  className="w-full sm:w-auto px-6 py-5 rounded-xl border-2 hover:border-primary/50 transition-all"
                 >
                   <Link href="#" className="flex items-center gap-3">
                     <div className="text-2xl">💻</div>

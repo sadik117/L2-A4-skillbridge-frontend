@@ -6,6 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GraduationCap, Loader2 } from "lucide-react";
 import { env } from "@/env";
+// import { Metadata } from "next";
+
+// export const metadata: Metadata = {
+//   title: "SkillBridge | Become Tutor",
+//   description: "Become a tutor and start teaching students worldwide",
+// };
 
 export default function BecomeTutorPage() {
   const router = useRouter();

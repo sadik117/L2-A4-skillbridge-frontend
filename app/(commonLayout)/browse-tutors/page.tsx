@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { env } from "@/env";
 import { PageLoadingSpinner } from "@/components/layouts/LoadingSpinner";
 import TutorCard from "@/components/layouts/TutorCard";
+
 
 interface Tutor {
   id: string;
