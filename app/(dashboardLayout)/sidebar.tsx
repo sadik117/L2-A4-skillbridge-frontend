@@ -103,7 +103,7 @@ const SidebarContent = ({
     { href: "/tutor-dashboard", label: "Dashboard", icon: iconMap.Dashboard },
     { href: "/tutor-dashboard/availability", label: "Availability", icon: iconMap.Availability },
     { href: "/tutor-dashboard/bookings", label: "Bookings", icon: iconMap.Bookings },
-    { href: "/tutor-dashboard/profile", label: "Profile", icon: iconMap.Profile },
+    { href: "/tutor-dashboard/profile", label: "Set Profile", icon: iconMap.Profile },
   ];
 
   const adminLinks = [

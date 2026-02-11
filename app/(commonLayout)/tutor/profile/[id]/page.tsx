@@ -30,7 +30,7 @@ async function getTutorById(id: string) {
 
 
 export default async function TutorProfilePage({ params }: TutorProfilePageProps) {
-  // `params` can be a Promise in some Next.js setups — await to unwrap it safely
+
   const resolvedParams = await params as { id: string };
   const tutor = await getTutorById(resolvedParams.id);
   

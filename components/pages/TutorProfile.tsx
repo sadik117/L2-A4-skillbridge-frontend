@@ -355,7 +355,7 @@ const TutorProfile = ({ tutor }: TutorProfileProps) => {
                       )}
                     </div>
 
-                    {/* ✅ CHECK ICON */}
+                    {/*  CHECK ICON */}
                     {!disabled && selectedSlot === slot.id && (
                       <Check className="h-4 w-4 text-purple-600" />
                     )}

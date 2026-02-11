@@ -32,7 +32,7 @@ const HeroSection = ({ className }: HeroSectionProps) => {
   };
 
   const popularSearches = [
-    "Calculus",
+    "English",
     "Programming",
     "Physics",
     "Chemistry",
@@ -94,7 +94,7 @@ const HeroSection = ({ className }: HeroSectionProps) => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="What do you want to learn? (e.g. Calculus, Programming, Spanish...)"
+                  placeholder="What do you want to learn? (e.g. Mathematics, Programming, Spanish...)"
                   className="w-full h-12 sm:h-14 md:h-16 px-10 sm:px-12 md:px-14 pr-28 sm:pr-32 md:pr-36 text-sm md:text-md rounded-full border-2 border-input bg-background shadow-lg hover:border-primary/50 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all duration-300"
                 />
                 <Button

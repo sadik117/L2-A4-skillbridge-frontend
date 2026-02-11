@@ -72,7 +72,7 @@ export const Navbar = () => {
     },
     {
       title: "Book Sessions",
-      href: "/browse-tutors", 
+      href: "/book-session", 
       icon: <BookOpen className="h-4 w-4" />,
     },
     ...(user && user?.role !== "TUTOR"

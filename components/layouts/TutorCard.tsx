@@ -142,7 +142,7 @@ const TutorCard = ({ tutor, className, compact = false }: TutorCardProps) => {
             "font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent",
             compact ? "text-lg" : "text-xl"
           )}>
-            ৳{tutor.hourlyRate}/hr
+            ৳ {tutor.hourlyRate}/hr
           </span>
           <span className="text-xs text-muted-foreground">Starting from</span>
         </div>

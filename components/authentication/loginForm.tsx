@@ -210,11 +210,11 @@ const handleSocialLogin = (provider: "google" | "github") => {
                       autoComplete="email"
                     />
                   </div>
-                  {field.state.meta.errors.length > 0 && (
+                  {/* {field.state.meta.errors.length > 0 && (
                     <p className="text-xs sm:text-sm text-destructive mt-1">
                       {field.state.meta.errors.join(", ")}
                     </p>
-                  )}
+                  )} */}
                 </div>
               )}
             </form.Field>
@@ -266,11 +266,11 @@ const handleSocialLogin = (provider: "google" | "github") => {
                       )}
                     </Button>
                   </div>
-                  {field.state.meta.errors.length > 0 && (
+                  {/* {field.state.meta.errors.length > 0 && (
                     <p className="text-xs sm:text-sm text-destructive mt-1">
                       {field.state.meta.errors.join(", ")}
                     </p>
-                  )}
+                  )} */}
                 </div>
               )}
             </form.Field>
@@ -322,7 +322,7 @@ const handleSocialLogin = (provider: "google" | "github") => {
         <div className="text-center text-sm sm:text-base">
           <span className="text-muted-foreground">Don't have an account? </span>
           <Link
-            href="/register"
+            href="/signup"
             className="text-primary hover:text-primary/80 font-semibold hover:underline underline-offset-2 transition-all"
           >
             Sign up now

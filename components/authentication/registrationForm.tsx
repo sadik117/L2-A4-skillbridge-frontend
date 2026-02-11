@@ -146,9 +146,9 @@ export default function RegisterForm() {
                     onChange={(e) => field.handleChange(e.target.value)}
                   />
                 </div>
-                {field.state.meta.errors.length > 0 && (
+                {/* {field.state.meta.errors.length > 0 && (
                   <p className="text-xs text-destructive mt-1">{field.state.meta.errors.join(", ")}</p>
-                )}
+                )} */}
               </div>
             )}
           </form.Field>
@@ -170,9 +170,9 @@ export default function RegisterForm() {
                     onChange={(e) => field.handleChange(e.target.value)}
                   />
                 </div>
-                {field.state.meta.errors.length > 0 && (
+                {/* {field.state.meta.errors.length > 0 && (
                   <p className="text-xs text-destructive mt-1">{field.state.meta.errors.join(", ")}</p>
-                )}
+                )} */}
               </div>
             )}
           </form.Field>
@@ -223,9 +223,9 @@ export default function RegisterForm() {
                     {showPassword ? <EyeOff /> : <Eye />}
                   </Button>
                 </div>
-                {field.state.meta.errors.length > 0 && (
+                {/* {field.state.meta.errors.length > 0 && (
                   <p className="text-xs text-destructive mt-2">{field.state.meta.errors.join(", ")}</p>
-                )}
+                )} */}
               </div>
             )}
           </form.Field>
@@ -256,9 +256,9 @@ export default function RegisterForm() {
                     {showConfirmPassword ? <EyeOff /> : <Eye />}
                   </Button>
                 </div>
-                {field.state.meta.errors.length > 0 && (
+                {/* {field.state.meta.errors.length > 0 && (
                   <p className="text-xs text-destructive mt-2">{field.state.meta.errors.join(", ")}</p>
-                )}
+                )} */}
               </div>
             )}
           </form.Field>

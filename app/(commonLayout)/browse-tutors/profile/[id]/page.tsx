@@ -1,6 +1,5 @@
 import NotFound from "@/app/not-found";
 import TutorProfile from "@/components/pages/TutorProfile";
-import { userService } from "@/components/services/user.service";
 
 
 interface TutorProfilePageProps {
