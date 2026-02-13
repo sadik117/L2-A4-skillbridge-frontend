@@ -1,20 +1,10 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "@tanstack/react-form";
-import { zodValidator } from "@tanstack/zod-form-adapter";
-import {
-  Eye,
-  EyeOff,
-  User,
-  Mail,
-  Lock,
-  Phone,
-  Loader2,
-} from "lucide-react";
+import { Eye, EyeOff, User, Mail, Lock, Phone, Loader2 } from "lucide-react";
 import { registerSchema } from "@/lib/authValidators";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
@@ -37,10 +27,10 @@ export default function RegisterForm() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
+
   const router = useRouter();
   const { setUser } = useAuthStore();
 
-  // Avoid hydration errors
   useEffect(() => setMounted(true), []);
 
   const form = useForm({
@@ -53,13 +43,8 @@ export default function RegisterForm() {
       phone: "",
       terms: false,
     },
-    validatorAdapter: zodValidator,
-    onSubmit: async ({ value }) => {
-      if (value.password !== value.confirmPassword) {
-        toast.error("Passwords don't match");
-        return;
-      }
 
+    onSubmit: async ({ value }) => {
       setIsLoading(true);
 
       try {
@@ -72,7 +57,6 @@ export default function RegisterForm() {
         if (error) throw new Error(error.message);
 
         if (data?.user) {
-          // Update global auth state immediately
           setUser(data.user);
 
           toast.success(`Welcome to SkillBridge, ${value.fullName}!`, {
@@ -131,7 +115,10 @@ export default function RegisterForm() {
           className="space-y-4 sm:space-y-6"
         >
           {/* Full Name */}
-          <form.Field name="fullName" validators={{ onChange: registerSchema.shape.fullName }}>
+          <form.Field
+            name="fullName"
+            validators={{ onChange: registerSchema.shape.fullName }}
+          >
             {(field) => (
               <div className="space-y-2">
                 <Label htmlFor="fullName">Full Name</Label>
@@ -146,15 +133,21 @@ export default function RegisterForm() {
                     onChange={(e) => field.handleChange(e.target.value)}
                   />
                 </div>
-                {/* {field.state.meta.errors.length > 0 && (
-                  <p className="text-xs text-destructive mt-1">{field.state.meta.errors.join(", ")}</p>
-                )} */}
+
+                {field.state.meta.errors?.[0]?.message && (
+                  <p className="text-xs text-destructive mt-2">
+                    {field.state.meta.errors[0].message}
+                  </p>
+                )}
               </div>
             )}
           </form.Field>
 
           {/* Email */}
-          <form.Field name="email" validators={{ onChange: registerSchema.shape.email }}>
+          <form.Field
+            name="email"
+            validators={{ onChange: registerSchema.shape.email }}
+          >
             {(field) => (
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
@@ -170,9 +163,12 @@ export default function RegisterForm() {
                     onChange={(e) => field.handleChange(e.target.value)}
                   />
                 </div>
-                {/* {field.state.meta.errors.length > 0 && (
-                  <p className="text-xs text-destructive mt-1">{field.state.meta.errors.join(", ")}</p>
-                )} */}
+
+                {field.state.meta.errors?.[0]?.message && (
+                  <p className="text-xs text-destructive mt-2">
+                    {field.state.meta.errors[0].message}
+                  </p>
+                )}
               </div>
             )}
           </form.Field>
@@ -181,7 +177,10 @@ export default function RegisterForm() {
           <form.Field name="phone">
             {(field) => (
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number <span className="text-muted-foreground">(Optional)</span></Label>
+                <Label htmlFor="phone">
+                  Phone Number{" "}
+                  <span className="text-muted-foreground">(Optional)</span>
+                </Label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                   <Input
@@ -198,7 +197,10 @@ export default function RegisterForm() {
           </form.Field>
 
           {/* Password */}
-          <form.Field name="password" validators={{ onChange: registerSchema.shape.password }}>
+          <form.Field
+            name="password"
+            validators={{ onChange: registerSchema.shape.password }}
+          >
             {(field) => (
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
@@ -218,20 +220,26 @@ export default function RegisterForm() {
                     variant="ghost"
                     size="icon"
                     className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 sm:h-8 sm:w-8"
-                    onClick={() => setShowPassword(!showPassword)}
+                    onClick={() => setShowPassword((p) => !p)}
                   >
                     {showPassword ? <EyeOff /> : <Eye />}
                   </Button>
                 </div>
-                {/* {field.state.meta.errors.length > 0 && (
-                  <p className="text-xs text-destructive mt-2">{field.state.meta.errors.join(", ")}</p>
-                )} */}
+
+                {field.state.meta.errors?.[0]?.message && (
+                  <p className="text-xs text-destructive mt-2">
+                    {field.state.meta.errors[0].message}
+                  </p>
+                )}
               </div>
             )}
           </form.Field>
 
           {/* Confirm Password */}
-          <form.Field name="confirmPassword">
+          <form.Field
+            name="confirmPassword"
+            validators={{ onChange: registerSchema.shape.confirmPassword }}
+          >
             {(field) => (
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm Password</Label>
@@ -251,29 +259,40 @@ export default function RegisterForm() {
                     variant="ghost"
                     size="icon"
                     className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 sm:h-8 sm:w-8"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    onClick={() => setShowConfirmPassword((p) => !p)}
                   >
                     {showConfirmPassword ? <EyeOff /> : <Eye />}
                   </Button>
                 </div>
-                {/* {field.state.meta.errors.length > 0 && (
-                  <p className="text-xs text-destructive mt-2">{field.state.meta.errors.join(", ")}</p>
-                )} */}
+
+                {field.state.meta.errors?.[0]?.message && (
+                  <p className="text-xs text-destructive mt-2">
+                    {field.state.meta.errors[0].message}
+                  </p>
+                )}
               </div>
             )}
           </form.Field>
 
           {/* Terms */}
-          <form.Field name="terms" validators={{ onChange: registerSchema.shape.terms }}>
+          <form.Field
+            name="terms"
+            validators={{ onChange: registerSchema.shape.terms }}
+          >
             {(field) => (
               <div className="flex items-start space-x-2.5 p-3 rounded-lg border border-border/50">
                 <Checkbox
                   id="terms"
                   checked={field.state.value}
-                  onCheckedChange={(checked) => field.handleChange(checked as boolean)}
+                  onCheckedChange={(checked) =>
+                    field.handleChange(checked as boolean)
+                  }
                   className="mt-0.5"
                 />
-                <Label htmlFor="terms" className="text-sm sm:text-base cursor-pointer">
+                <Label
+                  htmlFor="terms"
+                  className="text-sm sm:text-base cursor-pointer"
+                >
                   I agree to the{" "}
                   <Link href="/terms" className="text-primary underline">
                     Terms of Service
@@ -292,7 +311,11 @@ export default function RegisterForm() {
             className="w-full h-11 sm:h-12 font-semibold rounded-lg bg-gradient-to-r from-primary to-purple-600 hover:opacity-90"
             disabled={isLoading}
           >
-            {isLoading ? <Loader2 className="animate-spin mr-2 inline-block" /> : "Create Account"}
+            {isLoading ? (
+              <Loader2 className="animate-spin mr-2 inline-block" />
+            ) : (
+              "Create Account"
+            )}
           </Button>
         </form>
       </CardContent>

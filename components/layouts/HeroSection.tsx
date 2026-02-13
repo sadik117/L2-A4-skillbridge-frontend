@@ -51,7 +51,7 @@ const HeroSection = ({ className }: HeroSectionProps) => {
 
   return (
     <section
-      className={cn("relative overflow-hidden py-6 md:py-10", className)}
+      className={cn("relative overflow-hidden py-4 md:py-6", className)}
     >
       {/* Background Gradients - Responsive */}
       <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-background" />
@@ -63,7 +63,7 @@ const HeroSection = ({ className }: HeroSectionProps) => {
           {/* Left Content */}
           <div className="w-full lg:w-1/2 text-center lg:text-left">
             {/* Badge - Responsive */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-primary/10 border border-primary/20 mb-4 sm:mb-6 md:mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-primary/10 border border-primary/20 mb-4 md:mb-6">
               <Shield className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
               <span className="text-xs sm:text-sm md:text-base font-medium text-primary">
                 Trusted by Students Worldwide
@@ -71,7 +71,7 @@ const HeroSection = ({ className }: HeroSectionProps) => {
             </div>
 
             {/* Main Heading - Responsive Sizes */}
-            <h1 className="text-2xl md:text-4xl font-bold tracking-tight mb-4 sm:mb-6 md:mb-8">
+            <h1 className="text-2xl md:text-4xl font-bold tracking-tight mb-4 md:mb-6">
               <span className="block text-foreground">Connect with</span>
               <span className="block bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent bg-size-200 animate-gradient">
                 Expert Tutors,
@@ -80,7 +80,7 @@ const HeroSection = ({ className }: HeroSectionProps) => {
             </h1>
 
             {/* Description - Responsive */}
-            <p className="text-xs md:text-md  text-muted-foreground mb-6 md:mb-10 max-w-2xl mx-auto lg:mx-0">
+            <p className="text-xs md:text-base text-muted-foreground mb-6 md:mb-10 max-w-2xl mx-auto lg:mx-0">
               Find the perfect tutor for your learning journey. Personalized
               sessions at your pace with industry experts and top-rated
               educators.

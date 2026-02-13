@@ -334,7 +334,7 @@ const SidebarContent = ({
                         <span className="flex-1">{link.label}</span>
                       )}
                       
-                      {link.badge && !collapsed && (
+                      {/* {link.badge && !collapsed && (
                         <Badge 
                           variant={isActive ? "secondary" : "outline"} 
                           className={cn(
@@ -345,7 +345,7 @@ const SidebarContent = ({
                         >
                           {link.badge}
                         </Badge>
-                      )}
+                      )} */}
                     </Link>
                   </TooltipTrigger>
                   {collapsed && (
@@ -354,14 +354,14 @@ const SidebarContent = ({
                     )}>
                       <div className="flex items-center">
                         {link.label}
-                        {link.badge && (
+                        {/* {link.badge && (
                           <Badge className={cn(
                             "ml-2 h-4 px-1 text-xs",
                             darkMode ? "bg-gray-800" : ""
                           )}>
                             {link.badge}
                           </Badge>
-                        )}
+                        )} */}
                       </div>
                     </TooltipContent>
                   )}

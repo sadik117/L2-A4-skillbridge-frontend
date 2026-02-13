@@ -1,11 +1,9 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "@tanstack/react-form";
-import { zodValidator } from "@tanstack/zod-form-adapter";
 import { Eye, EyeOff, Lock, Mail, LogIn, Loader2, Shield } from "lucide-react";
 import { loginSchema } from "@/lib/authValidators";
 import { authClient } from "@/lib/auth-client";
@@ -37,50 +35,48 @@ export default function LoginForm() {
     setMounted(true);
   }, []);
 
-const form = useForm({
-  defaultValues: {
-    email: "",
-    password: "",
-    rememberMe: false,
-  },
-  validatorAdapter: zodValidator,
-  onSubmit: async ({ value }) => {
-    setIsLoading(true);
-    try {
-      const { data, error } = await authClient.signIn.email({
-        email: value.email,
-        password: value.password,
-        rememberMe: value.rememberMe,
-      });
-
-      if (error) {
-        throw new Error(error.message);
-      }
-
-      if (data?.user) {
-
-        useAuthStore.getState().setUser(data.user);
-
-        toast.success("Welcome back!", {
-          description: `You've successfully logged in ${data.user.name}`,
-          icon: <Shield className="h-5 w-5 text-green-500" />,
+  const form = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+      rememberMe: true,
+    },
+    onSubmit: async ({ value }) => {
+      setIsLoading(true);
+      try {
+        const { data, error } = await authClient.signIn.email({
+          email: value.email,
+          password: value.password,
+          rememberMe: value.rememberMe,
         });
 
-        router.replace("/"); 
-      }
-    } catch (err: any) {
-      toast.error(err?.message || "Failed to sign in");
-    } finally {
-      setIsLoading(false);
-    }
-  },
-});
+        if (error) {
+          throw new Error(error.message);
+        }
 
-const handleSocialLogin = (provider: "google" | "github") => {
-  toast.info("Coming soon!", {
-    description: `Social login with ${provider} will be available soon`,
+        if (data?.user) {
+          useAuthStore.getState().setUser(data.user);
+
+          toast.success("Welcome back!", {
+            description: `You've successfully logged in ${data.user.name}`,
+            icon: <Shield className="h-5 w-5 text-green-500" />,
+          });
+
+          router.replace("/");
+        }
+      } catch (err: any) {
+        toast.error(err?.message || "Failed to sign in");
+      } finally {
+        setIsLoading(false);
+      }
+    },
   });
-};
+
+  const handleSocialLogin = (provider: "google" | "github") => {
+    toast.info("Coming soon!", {
+      description: `Social login with ${provider} will be available soon`,
+    });
+  };
 
   // Prevent hydration mismatch by using mounted state
   if (!mounted) {
@@ -189,7 +185,12 @@ const handleSocialLogin = (provider: "google" | "github") => {
             <form.Field
               name="email"
               validators={{
-                onChange: loginSchema.shape.email,
+                onChange: ({ value }) => {
+                  const result = loginSchema.shape.email.safeParse(value);
+                  return result.success
+                    ? undefined
+                    : result.error.issues[0]?.message;
+                },
               }}
             >
               {(field) => (
@@ -210,11 +211,11 @@ const handleSocialLogin = (provider: "google" | "github") => {
                       autoComplete="email"
                     />
                   </div>
-                  {/* {field.state.meta.errors.length > 0 && (
-                    <p className="text-xs sm:text-sm text-destructive mt-1">
+                  {field.state.meta.errors?.[0] && (
+                    <p className="text-xs text-destructive mt-2">
                       {field.state.meta.errors.join(", ")}
                     </p>
-                  )} */}
+                  )}
                 </div>
               )}
             </form.Field>
@@ -224,7 +225,12 @@ const handleSocialLogin = (provider: "google" | "github") => {
             <form.Field
               name="password"
               validators={{
-                onChange: loginSchema.shape.password,
+                onChange: ({ value }) => {
+                  const result = loginSchema.shape.password.safeParse(value);
+                  return result.success
+                    ? undefined
+                    : result.error.issues[0]?.message;
+                },
               }}
             >
               {(field) => (
@@ -266,11 +272,11 @@ const handleSocialLogin = (provider: "google" | "github") => {
                       )}
                     </Button>
                   </div>
-                  {/* {field.state.meta.errors.length > 0 && (
-                    <p className="text-xs sm:text-sm text-destructive mt-1">
+                  {field.state.meta.errors?.[0] && (
+                    <p className="text-xs text-destructive mt-2">
                       {field.state.meta.errors.join(", ")}
                     </p>
-                  )} */}
+                  )}
                 </div>
               )}
             </form.Field>

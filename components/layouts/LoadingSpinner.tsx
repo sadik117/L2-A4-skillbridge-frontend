@@ -46,7 +46,7 @@ const LoadingSpinner = ({
               "rounded-full animate-spin",
               sizeClasses[size],
               variantClasses[variant],
-              variant === "gradient" && "bg-gradient-to-r from-primary via-purple-600 to-primary animate-gradient-spin",
+              "bg-gradient-to-r from-primary via-purple-600 to-primary animate-gradient-spin",
               className
             )} />
           ) : variant === "dots" ? (
@@ -103,7 +103,7 @@ const LoadingSpinner = ({
           "rounded-full animate-spin",
           sizeClasses[size],
           variantClasses[variant],
-          variant === "gradient" && "bg-gradient-to-r from-primary via-purple-600 to-primary animate-gradient-spin",
+          "bg-gradient-to-r from-primary via-purple-600 to-primary animate-gradient-spin",
         )} />
       ) : variant === "dots" ? (
         <div className={cn("flex items-center justify-center gap-1", sizeClasses[size])}>

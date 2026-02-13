@@ -1,34 +1,23 @@
 import { env } from "@/env";
 import { cookies } from "next/headers";
 
-const AUTH_URL = env.AUTH_API_URL;
+const AUTH_URL = env.NEXT_PUBLIC_AUTH_URL!;
 
 export const userService = {
   getSession: async function () {
     try {
       const cookieStore = await cookies();
-      const token = cookieStore.get("better-auth.session_token")?.value;
-
-      if (!token) {
-        return { data: null, error: { message: "No session cookie found" } };
-      }
 
       const res = await fetch(`${AUTH_URL}/get-session`, {
         headers: {
-          Cookie: `better-auth.session_token=${token}`, 
+          Cookie: cookieStore.toString(),
         },
         cache: "no-store",
       });
 
-      if (!res.ok) {
-        return { data: null, error: { message: "Session fetch failed" } };
-      }
-
       const session = await res.json();
 
-      // console.log(session);
-
-      if (!session) {
+      if (session === null) {
         return { data: null, error: { message: "Session is missing." } };
       }
 
