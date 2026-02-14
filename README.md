@@ -5,7 +5,8 @@ SkillBridge is a scalable full-stack tutor marketplace platform designed to conn
 
 Built using modern production-ready technologies with a clean architecture and modular design.
 
-📌 Overview
+
+ Overview:
 
 SkillBridge enables:
 
@@ -19,7 +20,8 @@ Clean, scalable backend architecture with Prisma ORM
 
 The platform is structured with clear separation between frontend and backend services, making it maintainable and extensible.
 
-🏗️ System Architecture
+
+ System Architecture:
 Client (Next.js App Router)
         ↓
 Better Auth (Cookie-based Auth)
@@ -30,7 +32,8 @@ Prisma ORM
         ↓
 PostgreSQL Database
 
-🛠 Technology Stack
+
+ Technology Stack:
 Frontend
 
 Next.js 14 (App Router)
@@ -67,7 +70,8 @@ Vercel / Custom Hosting (Backend)
 
 PostgreSQL (Production Database)
 
-🔐 Core Features
+
+ Core Features:
 Authentication & Authorization
 
 Secure HTTP-only cookie-based authentication
@@ -110,6 +114,7 @@ Prevents double-booking
 
 Booking state tracking (isBooked flag)
 
+
 📂 Repository Structure
 skillbridge/
 │
@@ -137,7 +142,8 @@ skillbridge/
 │   └── prisma/
 │       └── schema.prisma
 
-🗄 Database Design Example
+
+ Database Design Example:
 AvailabilitySlot Model
 model AvailabilitySlot {
   id String @id @default(uuid())
@@ -166,7 +172,8 @@ Boolean booking lock to prevent race conditions
 
 Structured time handling with DateTime
 
-🚀 Local Development Setup
+
+ Local Development Setup:
 1. Clone Repository
 git clone https://github.com/your-username/skillbridge.git
 cd skillbridge
@@ -217,7 +224,8 @@ Frontend runs at:
 
 http://localhost:3000
 
-🔒 Security Considerations
+
+ Security Considerations:
 
 HTTP-only cookies
 
@@ -231,7 +239,8 @@ Role-based route protection
 
 Prisma query abstraction for SQL injection protection
 
-📈 Scalability Considerations
+
+ Scalability Considerations:
 
 Modular backend architecture
 
@@ -251,21 +260,20 @@ Caching layer (Redis)
 
 Horizontal scaling
 
-🧪 Future Enhancements
+
+ Future Enhancements:
 
 Payment gateway integration
 
-Tutor ratings & review system
-
 Advanced search & filtering
 
-Admin analytics dashboard
 
 Calendar synchronization
 
 Email notifications
 
-🐛 Known Edge Cases Handled
+
+ Known Edge Cases Handled:
 
 Cross-site cookie rejection (SameSite policy)
 
