@@ -25,7 +25,7 @@ export default async function DashboardLayout({
   return (
     <div className="min-h-screen flex">
       <Sidebar role={role} />
-      <main className="flex-1 p-6 bg-gray-50">
+      <main className="flex-1 p-6 bg-gray-100 dark:bg-gray-900">
 
         {role === "ADMIN" ? admin : role === "TUTOR" ? tutor : student}
         

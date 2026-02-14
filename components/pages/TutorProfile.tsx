@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useTransition } from "react";
 import {
   MapPin,
   Clock,
@@ -13,379 +13,349 @@ import {
   CalendarCheck,
   Loader2,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { bookSessionAction } from "@/app/(commonLayout)/browse-tutors/profile/[id]/serverAction";
 
-import { useRouter } from "next/navigation";
-import axios from "axios";
-import { toast } from "sonner";
-import { env } from "@/env";
-import { cn } from "@/lib/utils";
-import { authClient } from "@/lib/auth-client";
-
-const formatTime = (dateStr: string) =>
-  new Date(dateStr).toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
-interface TutorProfileProps {
-  tutor: any;
-}
-
-const TutorProfile = ({ tutor }: TutorProfileProps) => {
-  const API = env.NEXT_PUBLIC_FRONTEND_API_URL;
+export default function TutorProfile({ tutor }: { tutor: any }) {
   const router = useRouter();
-
-  const [darkMode, setDarkMode] = useState(false);
-  const [activeTab, setActiveTab] = useState("about");
-  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
 
-  const [studentId, setStudentId] = useState<string | null>(null);
+  const handleBooking = () => {
+    if (!selectedSlot) return toast.error("Select a slot first");
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const session = await authClient.getSession();
-        if (session.data?.user.id) {
-          setStudentId(session.data?.user.id);
-        }
-        console.log(session);
-      } catch (err) {
-        console.error("Failed to get session:", err);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
-  // console.log("Student ID:", studentId);
-
-  // detect theme
-  useEffect(() => {
-    const checkDarkMode = () =>
-      setDarkMode(document.documentElement.classList.contains("dark"));
-
-    checkDarkMode();
-
-    const observer = new MutationObserver(checkDarkMode);
-    observer.observe(document.documentElement, { attributes: true });
-
-    return () => observer.disconnect();
-  }, []);
-
-  if (!tutor || !tutor.user) {
-    return (
-      <div className="flex min-h-screen items-center justify-center text-muted-foreground">
-        Tutor profile not available.
-      </div>
-    );
-  }
-
-  const {
-    user,
-    category,
-    bio = "",
-    hourlyRate = 0,
-    rating = 0,
-    reviewCount = 0,
-    location = "Location not specified",
-    experience = 0,
-    education = [],
-    availability = [],
-    languages = [],
-    teachingStyle = "",
-    reviews = [],
-  } = tutor;
-
-  // Book session
-  const handleConfirmBooking = async () => {
-    if (!studentId) {
-      toast.error("Please login first");
-      router.push("/login");
-      return;
-    }
-
-    if (!selectedSlot) {
-      toast.error("Please select a slot");
-      return;
-    }
-
-    const slot = availability.find((s: any) => s.id === selectedSlot);
-
-    if (slot?.isBooked) {
-      toast.error("This slot is already booked");
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      await axios.post(
-        `${API}/booking/book-session`,
-        {
-          studentId,
-          tutorId: tutor.id,
-          slotId: selectedSlot,
-        },
-        { withCredentials: true },
-      );
-
-      toast.success("Booking confirmed");
-      setIsBookingOpen(false);
-      router.refresh();
-    } catch (err: any) {
-      if (err.response?.status === 401) {
-        toast.error("Session expired. Login again.");
-        router.push("/login");
+    startTransition(async () => {
+      const result = await bookSessionAction(tutor.id, selectedSlot);
+      if (result.success) {
+        toast.success("Session booked successfully!");
+        setIsBookingOpen(false);
       } else {
-        toast.error(err.response?.data?.message || "Booking failed");
+        toast.error(result.message);
       }
-    } finally {
-      setLoading(false);
-    }
+    });
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
-      {/* Top */}
-      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b">
-        <div className="container mx-auto px-4 py-4 flex justify-between">
-          <Button variant="ghost" onClick={() => router.back()}>
-            <ChevronLeft className="h-4 w-4 mr-2" />
-            Back
-          </Button>
+  const formatTime = (dateStr: string) =>
+    new Date(dateStr).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
 
+  return (
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 transition-colors">
+      {/* Sticky Header */}
+      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => router.back()}
+            className="rounded-full"
+          >
+            <ChevronLeft className="w-4 h-4 mr-2" /> Back
+          </Button>
           <div className="flex gap-2">
-            <Button variant="ghost" size="icon">
-              <Bookmark className="h-5 w-5" />
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <Bookmark className="w-4 h-4" />
             </Button>
-            <Button variant="ghost" size="icon">
-              <Share2 className="h-5 w-5" />
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <Share2 className="w-4 h-4" />
             </Button>
           </div>
         </div>
-      </div>
+      </nav>
 
-      {/* Layout */}
-      <div className="container mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* LEFT */}
-        <div className="space-y-6">
-          <Card className="sticky top-24">
-            <CardContent className="pt-6 text-center">
-              <Avatar className="h-32 w-32 mb-4 ml-20 md:ml-16 border-4 border-background shadow-lg">
-                <AvatarImage src={user.avatar} />{" "}
-                <AvatarFallback className="bg-gradient-to-br from-primary to-purple-600 text-white text-3xl">
-                  {" "}
-                  {user.name.charAt(0)}
+      <main className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left Column: Profile Card */}
+        <aside className="lg:col-span-1">
+          <Card className="sticky top-24 border-zinc-200 dark:border-zinc-800 shadow-xl rounded-3xl overflow-hidden">
+            <div className="h-24 bg-gradient-to-r from-indigo-600 to-purple-600" />
+            <CardContent className="pt-0 text-center -mt-12">
+              <Avatar className="w-24 h-24 mx-auto border-4 border-white dark:border-zinc-900 shadow-lg">
+                <AvatarImage src={tutor.user.avatar} />
+                <AvatarFallback className="bg-zinc-200 dark:bg-zinc-800 text-xl font-bold">
+                  {tutor.user.name.charAt(0)}
                 </AvatarFallback>
               </Avatar>
+              <h1 className="mt-4 text-2xl font-black text-zinc-900 dark:text-zinc-50">
+                {tutor.user.name}
+              </h1>
+              <Badge
+                variant="secondary"
+                className="mt-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400"
+              >
+                {tutor.category?.name}
+              </Badge>
 
-              <h1 className="text-2xl font-bold">{user.name}</h1>
-
-              <p className="text-muted-foreground flex items-center gap-1 justify-center">
-                <BookOpen className="h-4 w-4" />
-                {category?.name ?? "Uncategorized"}
-              </p>
-
-              {/* rating */}
-              <div className="flex justify-center gap-2 my-3">
-                <span className="font-bold">{rating.toFixed(1)}</span>
-                <span className="text-muted-foreground">
-                  ({reviewCount} reviews)
-                </span>
-              </div>
-
-              <div className="space-y-2 mb-6">
-                <div className="flex items-center justify-center gap-2">
-                  <MapPin className="h-4 w-4" />
-                  {location}
+              <div className="grid grid-cols-2 gap-4 my-6 py-4 border-y border-zinc-100 dark:border-zinc-800">
+                <div>
+                  <p className="text-[10px] font-bold uppercase text-zinc-400">
+                    Rating
+                  </p>
+                  <p className="font-bold text-zinc-900 dark:text-zinc-50">
+                    ★ {tutor.rating}
+                  </p>
                 </div>
-                <div className="flex items-center justify-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  {experience} years
-                </div>
-                <div className="flex gap-1 justify-center flex-wrap">
-                  {languages.map((l: string, i: number) => (
-                    <Badge key={i}>{l}</Badge>
-                  ))}
+                <div>
+                  <p className="text-[10px] font-bold uppercase text-zinc-400">
+                    Experience
+                  </p>
+                  <p className="font-bold text-zinc-900 dark:text-zinc-50">
+                    {tutor.experience} Years
+                  </p>
                 </div>
               </div>
 
-              <div className="text-3xl font-bold mb-4">৳{hourlyRate}/hour</div>
+              <div className="text-3xl font-black text-zinc-900 dark:text-zinc-50 mb-6">
+                ৳{tutor.hourlyRate}
+                <span className="text-sm font-normal text-zinc-500">/hr</span>
+              </div>
 
-              <Button onClick={() => setIsBookingOpen(true)} className="w-full">
-                <Calendar className="mr-2 h-4 w-4" />
-                Book a Session
+              <Button
+                onClick={() => setIsBookingOpen(true)}
+                className="w-full h-12 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/20"
+              >
+                <Calendar className="w-4 h-4 mr-2" /> Book a Session
               </Button>
             </CardContent>
           </Card>
-        </div>
+        </aside>
 
-        {/* RIGHT */}
-        <div className="lg:col-span-2">
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid grid-cols-4 mb-8">
-              <TabsTrigger value="about">About</TabsTrigger>
-              <TabsTrigger value="subjects">Subjects</TabsTrigger>
-              <TabsTrigger value="reviews">Reviews ({reviewCount})</TabsTrigger>
-              <TabsTrigger value="availability">Schedule</TabsTrigger>
+        {/* Right Column: Content */}
+        <div className="lg:col-span-2 space-y-6">
+          <Tabs defaultValue="about" className="w-full">
+            <TabsList className="w-full justify-start h-12 bg-transparent border-b border-zinc-200 dark:border-zinc-800 rounded-none p-0 gap-8">
+              {["about", "availability", "reviews"].map((tab) => (
+                <TabsTrigger
+                  key={tab}
+                  value={tab}
+                  className="data-[state=active]:border-b-2 data-[state=active]:border-indigo-500 rounded-none bg-transparent px-0 text-sm font-bold uppercase tracking-wider"
+                >
+                  {tab}
+                </TabsTrigger>
+              ))}
             </TabsList>
 
-            <TabsContent value="about">
-              <Card>
-                <CardHeader>
-                  <CardTitle>About Me</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <p>{bio}</p>
-                  <div>
-                    <h3 className="font-semibold">Teaching Style</h3>
-                    <p className="text-muted-foreground">{teachingStyle}</p>
+            <TabsContent value="about" className="py-6 space-y-8">
+              <section>
+                <h2 className="text-xl font-bold mb-4">Biography</h2>
+                <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                  {tutor.bio}
+                </p>
+              </section>
+              <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="p-6 rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+                  <h3 className="font-bold flex items-center gap-2 mb-2">
+                    <BookOpen className="w-4 h-4 text-indigo-500" /> Teaching
+                    Style
+                  </h3>
+                  <p className="text-sm text-zinc-500">
+                    {tutor.teachingStyle || "Adaptive and student-focused."}
+                  </p>
+                </div>
+                <div className="p-6 rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+                  <h3 className="font-bold flex items-center gap-2 mb-2">
+                    <MapPin className="w-4 h-4 text-indigo-500" /> Location
+                  </h3>
+                  <p className="text-sm text-zinc-500">{tutor.location}</p>
+                </div>
+              </section>
+            </TabsContent>
+
+            <TabsContent value="availability" className="py-6">
+              <div className="grid grid-cols-1 gap-4">
+                {tutor.availability.map((slot: any) => (
+                  <div
+                    key={slot.id}
+                    className="flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800">
+                        <Clock className="w-4 h-4 text-indigo-500" />
+                      </div>
+                      <div>
+                        <p className="font-bold text-sm uppercase">
+                          {slot.daysOfWeek.join(", ")}
+                        </p>
+                        <p className="text-xs text-zinc-500">
+                          {formatTime(slot.startTime)} -{" "}
+                          {formatTime(slot.endTime)}
+                        </p>
+                      </div>
+                    </div>
+                    {slot.isBooked ? (
+                      <Badge
+                        variant="outline"
+                        className="text-red-500 border-red-200"
+                      >
+                        Booked
+                      </Badge>
+                    ) : (
+                      <Badge className="bg-emerald-500">Available</Badge>
+                    )}
                   </div>
-                </CardContent>
-              </Card>
+                ))}
+              </div>
             </TabsContent>
 
-            <TabsContent value="subjects">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Subjects</CardTitle>
-                </CardHeader>
-                <CardContent>{category?.slug}</CardContent>
-              </Card>
-            </TabsContent>
+            <TabsContent value="reviews" className="py-6 outline-none">
+              <div className="space-y-6">
+                {/* REVIEWS HEADER / SUMMARY */}
+                {tutor.reviews.length > 0 && (
+                  <div className="flex items-center justify-between p-6 rounded-2xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800">
+                    <div>
+                      <h3 className="text-2xl font-bold">
+                        {tutor.rating} ★
+                      </h3>
+                      <p className="text-sm text-zinc-500">
+                        Average Student Rating
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold">{tutor.reviews.length}</p>
+                      <p className="text-sm text-zinc-500">Total Reviews</p>
+                    </div>
+                  </div>
+                )}
 
-            <TabsContent value="reviews">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Student Reviews</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {reviews.length
-                    ? reviews.map((r: any) => (
-                        <div key={r.id} className="mb-4">
-                          <h4 className="font-semibold">{r.student.name}</h4>
-                          <p className="text-muted-foreground">{r.comment}</p>
-                        </div>
-                      ))
-                    : "No reviews yet."}
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="availability">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Weekly Schedule</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {availability.length
-                    ? availability.map((slot: any) => (
-                        <div
-                          key={slot.id}
-                          className="flex justify-between border p-2 rounded mb-2"
-                        >
-                          <span>{slot.daysOfWeek.join(", ")}</span>
-                          <span>
-                            {formatTime(slot.startTime)} -{" "}
-                            {formatTime(slot.endTime)}
+                {/* REVIEWS LIST */}
+                <div className="grid grid-cols-1 gap-4">
+                  {tutor.reviews.length > 0 ? (
+                    tutor.reviews.map((r: any) => (
+                      <div
+                        key={r.id}
+                        className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm"
+                      >
+                        <div className="flex justify-between items-start mb-3">
+                          <div className="flex items-center gap-3">
+                            {/* Avatar Placeholder */}
+                            <div className="h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold text-xs">
+                              {r.student.name.charAt(0)}
+                            </div>
+                            <div>
+                              <h4 className="font-bold text-sm dark:text-zinc-200">
+                                {r.student.name}
+                              </h4>
+                              <div className="flex items-center gap-1">
+                                {[...Array(5)].map((_, i) => (
+                                  <svg
+                                    key={i}
+                                    className={cn(
+                                      "w-3 h-3",
+                                      i < r.rating
+                                        ? "text-amber-400 fill-amber-400"
+                                        : "text-zinc-300 dark:text-zinc-700",
+                                    )}
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                  </svg>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                          <span className="text-[10px] text-zinc-400 uppercase font-medium"> 
+                            {r.createdAt
+                              ? new Date(r.createdAt).toLocaleDateString()
+                              : "Recent"}
                           </span>
                         </div>
-                      ))
-                    : "No availability"}
-                </CardContent>
-              </Card>
+
+                        <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed italic">
+                          {r.comment}
+                        </p>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-12 border-2 border-dashed border-zinc-100 dark:border-zinc-800 rounded-2xl">
+                      <p className="text-zinc-500 text-sm">
+                        No reviews yet for this tutor.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
             </TabsContent>
           </Tabs>
         </div>
-      </div>
+      </main>
 
-      {/* MODAL  */}
+      {/* Modern Booking Modal */}
       {isBookingOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div
-            className="absolute inset-0 bg-black/60"
+            className="absolute inset-0 bg-zinc-950/60 backdrop-blur-sm"
             onClick={() => setIsBookingOpen(false)}
           />
-
-          <div className="relative bg-white dark:bg-gray-900 p-6 rounded-xl w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">Select Time Slot</h2>
-
-            <div className="space-y-2 max-h-60 overflow-y-auto">
-              {availability.map((slot: any) => {
-                const disabled = slot.isBooked;
-
-                return (
-                  <div
-                    key={slot.id}
-                    onClick={() => {
-                      if (disabled) return;
-                      setSelectedSlot(slot.id);
-                    }}
-                    className={cn(
-                      "p-3 rounded border flex justify-between items-center transition",
-                      disabled
-                        ? "opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-800"
-                        : "cursor-pointer hover:border-purple-400",
-                      selectedSlot === slot.id && "border-purple-500",
-                    )}
-                  >
-                    <div>
-                      <div className="font-medium">
-                        {slot.daysOfWeek.join(", ")}
-                      </div>
-
-                      <div className="text-sm text-muted-foreground">
-                        {formatTime(slot.startTime)} –{" "}
-                        {formatTime(slot.endTime)}
-                      </div>
-
-                      {/* BOOKED MESSAGE */}
-                      {disabled && (
-                        <div className="text-xs text-red-600 dark:text-red-400 mt-1 font-semibold">
-                          Slot already booked
-                        </div>
-                      )}
-                    </div>
-
-                    {/*  CHECK ICON */}
-                    {!disabled && selectedSlot === slot.id && (
-                      <Check className="h-4 w-4 text-purple-600" />
-                    )}
+          <Card className="relative w-full max-w-md rounded-3xl border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden">
+            <CardHeader className="bg-zinc-50 dark:bg-zinc-800/50">
+              <CardTitle className="text-xl font-black">
+                Select a Slot
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 space-y-3 max-h-[400px] overflow-y-auto">
+              {tutor.availability.map((slot: any) => (
+                <button
+                  key={slot.id}
+                  disabled={slot.isBooked}
+                  onClick={() => setSelectedSlot(slot.id)}
+                  className={cn(
+                    "w-full p-4 rounded-2xl border text-left transition-all flex justify-between items-center",
+                    slot.isBooked
+                      ? "opacity-40 cursor-not-allowed bg-zinc-100 dark:bg-zinc-800"
+                      : "hover:border-indigo-500",
+                    selectedSlot === slot.id
+                      ? "border-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/20 ring-1 ring-indigo-500"
+                      : "border-zinc-200 dark:border-zinc-800",
+                  )}
+                >
+                  <div>
+                    <p className="font-bold text-sm uppercase">
+                      {slot.daysOfWeek.join(", ")}
+                    </p>
+                    <p className="text-xs text-zinc-500">
+                      {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
+                    </p>
                   </div>
-                );
-              })}
+                  {selectedSlot === slot.id && (
+                    <Check className="w-5 h-5 text-indigo-600" />
+                  )}
+                </button>
+              ))}
+            </CardContent>
+            <div className="p-6 border-t border-zinc-100 dark:border-zinc-800 flex gap-3">
+              <Button
+                variant="ghost"
+                onClick={() => setIsBookingOpen(false)}
+                className="flex-1 rounded-xl"
+              >
+                Cancel
+              </Button>
+              <Button
+                disabled={isPending || !selectedSlot}
+                onClick={handleBooking}
+                className="flex-[2] rounded-xl bg-indigo-600 text-white"
+              >
+                {isPending ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  "Confirm Booking"
+                )}
+              </Button>
             </div>
-
-            <Button
-              onClick={handleConfirmBooking}
-              disabled={loading || !selectedSlot}
-              className="w-full mt-4"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Booking...
-                </>
-              ) : (
-                <>
-                  <CalendarCheck className="h-4 w-4 mr-2" />
-                  Confirm Booking
-                </>
-              )}
-            </Button>
-          </div>
+          </Card>
         </div>
       )}
     </div>
   );
-};
-
-export default TutorProfile;
+}

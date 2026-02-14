@@ -93,8 +93,8 @@ export default function TutorAvailabilityClient({ initialSlots }: TutorAvailabil
   return (
     <div className="max-w-3xl mx-auto py-10 px-4 space-y-6 text-zinc-900 dark:text-gray-800 transition-colors">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold text-gray-700 dark:text-gray-800">Manage Availability</h1>
-        <p className="text-muted-foreground dark:text-zinc-400">Set recurring weekly hours or specific available dates.</p>
+        <h1 className="text-3xl font-bold text-gray-700 dark:text-gray-100">Manage Availability</h1>
+        <p className="text-muted-foreground dark:text-zinc-100">Set recurring weekly hours or specific available dates.</p>
       </div>
 
       <Card className="dark:bg-zinc-900 dark:border-zinc-800">

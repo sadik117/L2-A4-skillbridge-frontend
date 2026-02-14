@@ -1,8 +1,13 @@
-// app/student/dashboard/page.tsx
+
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { env } from "@/env";
 import StudentDashboardClient from "./StudentDashboardClient";
+
+export const metadata = {
+  title: "Skill Bridge | Student Dashboard",
+  description: "Welcome to dashboard dear student.",
+};
 
 async function getProfileData() {
   const cookieStore = await cookies();

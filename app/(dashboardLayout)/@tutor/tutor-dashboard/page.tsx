@@ -4,6 +4,11 @@ import { redirect } from "next/navigation";
 import { env } from "@/env";
 import TutorDashboardClient from "./TutorDashboardClient";
 
+export const metadata = {
+  title: "Skill Bridge | Tutor Dashboard",
+  description: "Welcome to dashboard tutor.",
+};
+
 async function getTutorProfile() {
   const cookieStore = await cookies();
   const allCookies = cookieStore.toString();

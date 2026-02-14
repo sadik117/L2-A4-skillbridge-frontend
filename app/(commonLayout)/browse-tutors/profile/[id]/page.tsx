@@ -1,38 +1,18 @@
-import NotFound from "@/app/not-found";
+import { notFound } from "next/navigation";
+import { env } from "@/env";
 import TutorProfile from "@/components/pages/TutorProfile";
 
-
-interface TutorProfilePageProps {
-  params: {
-    tutorId: string;
-  };
+async function getTutor(id: string) {
+  const API = env.NEXT_PUBLIC_FRONTEND_API_URL;
+  const res = await fetch(`${API}/tutor/profile/${id}`, { cache: "no-store" });
+  if (!res.ok) return null;
+  const json = await res.json();
+  return json.data;
 }
 
-async function getTutorById(tutorId: string) {
-  try {
-    const API =
-      process.env.BACKEND_API_URL ||
-      process.env.NEXT_PUBLIC_API_URL ||
-      "http://localhost:5000/api/v1";
-
-    const res = await fetch(`${API}/tutor/profile/${tutorId}`, {
-      cache: "no-store",
-    });
-
-    if (!res.ok) return null;
-
-    const json = await res.json();
-    return json.data; 
-  } catch {
-    return null;
-  }
-}
-
-export default async function TutorProfilePage({ params }: TutorProfilePageProps) {
-  // fetch tutor
-  const tutor = await getTutorById(params.tutorId);
-  if (!tutor) return <NotFound />;
-
+export default async function TutorProfilePage({ params }: { params: { tutorId: string } }) {
+  const tutor = await getTutor(params.tutorId);
+  if (!tutor) notFound();
 
   return <TutorProfile tutor={tutor} />;
 }
