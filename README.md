@@ -1,4 +1,5 @@
 SkillBridge
+
 Enterprise-Grade Tutor Booking Platform
 
 SkillBridge is a scalable full-stack tutor marketplace platform designed to connect students with professional tutors through a structured booking system, real-time availability management, and secure authentication.
@@ -6,7 +7,7 @@ SkillBridge is a scalable full-stack tutor marketplace platform designed to conn
 Built using modern production-ready technologies with a clean architecture and modular design.
 
 
- Overview:
+Overview:
 
 SkillBridge enables:
 
@@ -21,7 +22,8 @@ Clean, scalable backend architecture with Prisma ORM
 The platform is structured with clear separation between frontend and backend services, making it maintainable and extensible.
 
 
- System Architecture:
+System Architecture:
+
 Client (Next.js App Router)
         ↓
 Better Auth (Cookie-based Auth)
@@ -33,7 +35,8 @@ Prisma ORM
 PostgreSQL Database
 
 
- Technology Stack:
+Technology Stack:
+
 Frontend
 
 Next.js 14 (App Router)
@@ -49,6 +52,7 @@ TanStack React Form
 Lucide Icons
 
 Better Auth (Client SDK)
+
 
 Backend
 
@@ -71,7 +75,8 @@ Vercel / Custom Hosting (Backend)
 PostgreSQL (Production Database)
 
 
- Core Features:
+Core Features:
+
 Authentication & Authorization
 
 Secure HTTP-only cookie-based authentication
@@ -119,45 +124,72 @@ Booking state tracking (isBooked flag)
 skillbridge/
 │
 ├── frontend/
+
 │   ├── app/
+
 │   │   ├── (commonLayout)/
+
 │   │   ├── (dashboardLayout)/
+
 │   │   ├── tutor/
+
 │   │   └── api/
+
 │   ├── components/
+
 │   ├── lib/
+
 │   └── types/
 │
 ├── backend/
+
 │   ├── src/
+
 │   │   ├── modules/
+
 │   │   │   ├── auth/
+
 │   │   │   ├── tutor/
+
 │   │   │   ├── booking/
+
 │   │   │   └── category/
+
 │   │   ├── routes/
+
 │   │   ├── services/
+
 │   │   ├── middlewares/
+
 │   │   └── utils/
+
 │   └── prisma/
+
 │       └── schema.prisma
 
 
- Database Design Example:
+Database Design Example:
+ 
 AvailabilitySlot Model
+
 model AvailabilitySlot {
+
   id String @id @default(uuid())
 
   tutorProfileId String
+  
   tutorProfile   TutorProfile @relation(fields: [tutorProfileId], references: [id], onDelete: Cascade)
 
   isBooked Boolean @default(false)
 
   startTime  DateTime
+  
   endTime    DateTime
+  
   daysOfWeek String[]
 
   createdAt DateTime @default(now())
+  
   updatedAt DateTime @updatedAt
 
   @@map("availability_slot")
@@ -173,7 +205,7 @@ Boolean booking lock to prevent race conditions
 Structured time handling with DateTime
 
 
- Local Development Setup:
+Local Development Setup:
 1. Clone Repository
 git clone https://github.com/your-username/skillbridge.git
 cd skillbridge
@@ -250,30 +282,24 @@ Prisma for schema migrations & type safety
 
 Route grouping in Next.js for layout isolation
 
-Prepared for:
-
-Payment integration (Stripe)
-
-WebSocket real-time updates
-
-Caching layer (Redis)
-
-Horizontal scaling
 
 
- Future Enhancements:
+Future Enhancements:
 
 Payment gateway integration
 
 Advanced search & filtering
 
+WebSocket real-time updates
+
+Caching layer (Redis)
 
 Calendar synchronization
 
 Email notifications
 
 
- Known Edge Cases Handled:
+Known Edge Cases Handled:
 
 Cross-site cookie rejection (SameSite policy)
 
