@@ -18,7 +18,7 @@ export default function NewsLetterSection() {
         <>
 
             <div className="border-b border-border/50">
-                <div className="container mx-auto px-4 sm:px-6 py-0 sm:py-12">
+                <div className="container mx-auto px-4 sm:px-6 py-12">
                     <div className="text-center max-w-3xl mx-auto">
                         <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3 sm:mb-4">
                             Stay Updated with SkillBridge

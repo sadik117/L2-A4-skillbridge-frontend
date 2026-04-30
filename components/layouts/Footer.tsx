@@ -19,34 +19,18 @@ const Footer = ({ className }: FooterProps) => {
       title: "Platform",
       links: [
         { text: "Browse Tutors", url: "/browse-tutors" },
-        { text: "How It Works", url: "#" },
-        { text: "For Tutors", url: "/become-tutor" },
-        { text: "Pricing", url: "#" },
-        { text: "Success Stories", url: "#" },
-        { text: "FAQ", url: "#" },
+        { text: "Become Tutor", url: "/become-tutor" },
+        { text: "How It Works", url: "/how-it-works" },
+        { text: "FAQ", url: "/faq" },
       ],
     },
     {
       title: "Company",
       links: [
-        { text: "About Us", url: "#" },
-        { text: "Careers", url: "#" },
-        { text: "Press", url: "#" },
-        { text: "Blog", url: "#" },
-        { text: "Partners", url: "#" },
-        { text: "Contact", url: "#" },
-      ],
-    },
-
-    {
-      title: "Subjects",
-      links: [
-        { text: "Mathematics", url: "/tutor?search=mathematics" },
-        { text: "English", url: "/tutor?search=english" },
-        { text: "Programming", url: "/tutor?search=programming" },
-        { text: "Statistics", url: "/tutor?search=statistics" },
-        { text: "Business", url: "/tutor?search=business" },
-        { text: "Web Development", url: "/tutor?search=webdevelopment" },
+        { text: "About Us", url: "/about-us" },
+        { text: "Privacy Policy", url: "/privacy-policy" },
+        { text: "Contact", url: "/contact" },
+        { text: "Help Center", url: "/help-center" },
       ],
     },
   ];
@@ -69,11 +53,11 @@ const Footer = ({ className }: FooterProps) => {
     <footer className={cn("bg-gradient-to-b from-background to-muted/5 border-t", className)}>
 
       {/* Main Footer Content */}
-      <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-8">
+      <div className="container mx-auto px-6 sm:py-10 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-6 gap-8 md:gap-20">
           {/* Logo and Description - Full width on mobile, spans 2 cols on lg+ */}
-          <div className="sm:col-span-2 lg:col-span-2">
-            <Link href="/" className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
+          <div className="lg:col-span-2">
+            <Link href="/" className="flex flex-col items-start gap-4 mb-4">
               <div className="flex items-center gap-3">
                 <Image 
                   src={navLogo} 
@@ -96,33 +80,16 @@ const Footer = ({ className }: FooterProps) => {
               SkillBridge connects passionate learners with expert tutors worldwide. 
               Our mission is to make quality education accessible to everyone.
             </p>
-            
-            {/* Contact Info */}
-            <div className="space-y-3 sm:space-y-4">
-              <div className="flex items-start gap-3">
-                <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-primary mt-0.5 flex-shrink-0" />
-                <span className="text-xs sm:text-sm text-muted-foreground">
-                  123 Learning Street, Education City, EC 12345
-                </span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Phone className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
-                <span className="text-xs sm:text-sm text-muted-foreground">+1 (555) 123-4567</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
-                <span className="text-xs sm:text-sm text-muted-foreground">support@skillbridge.com</span>
-              </div>
-            </div>
+
           </div>
 
           {/* Menu Sections - Responsive grid */}
           {menuItems.map((section, index) => (
             <div key={index} className="sm:col-span-1">
-              <h3 className="font-semibold text-base sm:text-lg mb-4 sm:mb-6">
+              <h3 className="font-semibold text-base sm:text-lg mb-2 sm:mb-3">
                 {section.title}
               </h3>
-              <ul className="space-y-2 sm:space-y-3">
+              <ul className="space-y-1 sm:space-y-2">
                 {section.links.map((link, linkIndex) => (
                   <li key={linkIndex}>
                     <Link 
@@ -136,10 +103,28 @@ const Footer = ({ className }: FooterProps) => {
               </ul>
             </div>
           ))}
+                      
+            {/* Contact Info */}
+            <div className="space-y-2 sm:space-y-3">
+              <div className="flex items-center gap-3">
+                <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
+                <span className="text-xs sm:text-sm text-muted-foreground">
+                  Rajshahi, Bangladesh
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Phone className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
+                <span className="text-xs sm:text-sm text-muted-foreground">+8801717375585</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
+                <span className="text-xs sm:text-sm text-muted-foreground">sadiksourov11@gmail.com</span>
+              </div>
+            </div>
         </div>
 
         {/* Trust Badges - Mobile stacked, desktop inline */}
-        <div className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-border/50">
+        <div className="mt-4 sm:mt-12 pt-6 sm:pt-8 border-t border-border/50">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {trustBadges.map((badge, index) => (
               <div 
@@ -159,7 +144,7 @@ const Footer = ({ className }: FooterProps) => {
         </div>
 
         {/* Bottom Footer */}
-        <div className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-border/50">
+        <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-border/50">
           <div className="flex flex-col lg:flex-row justify-between items-center gap-4 sm:gap-6">
             {/* Copyright */}
             <div className="text-center lg:text-left">
@@ -167,7 +152,7 @@ const Footer = ({ className }: FooterProps) => {
                 © {currentYear} SkillBridge. All rights reserved.
               </p>
               <p className="text-xs text-muted-foreground/70 mt-1">
-                Empowering learners worldwide since 2023
+                Empowering learners worldwide since 2025
               </p>
             </div>
             
@@ -186,100 +171,6 @@ const Footer = ({ className }: FooterProps) => {
                   {social.icon}
                 </Link>
               ))}
-            </div>
-            
-            {/* Legal Links */}
-            <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-xs sm:text-sm">
-              <Link 
-                href="/privacy" 
-                className="text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Privacy Policy
-              </Link>
-              <Link 
-                href="/terms" 
-                className="text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Terms of Service
-              </Link>
-              <Link 
-                href="/cookies" 
-                className="text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Cookie Policy
-              </Link>
-              <Link 
-                href="/accessibility" 
-                className="text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Accessibility
-              </Link>
-            </div>
-          </div>
-
-          {/* Download Apps */}
-          <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-border/50">
-            <div className="text-center">
-              <p className="text-sm sm:text-base font-medium mb-4">Download Our App</p>
-              <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-                <Button 
-                  asChild 
-                  variant="outline" 
-                  className="w-full sm:w-auto px-6 py-5 rounded-xl border-2 hover:border-primary/50 transition-all"
-                >
-                  <Link href="#" className="flex items-center gap-3">
-                    <div className="text-2xl">📱</div>
-                    <div className="text-left">
-                      <div className="text-xs">Download on the</div>
-                      <div className="text-sm font-bold">App Store</div>
-                    </div>
-                  </Link>
-                </Button>
-                <Button 
-                  asChild 
-                  variant="outline" 
-                  className="w-full sm:w-auto px-6 py-5 rounded-xl border-2 hover:border-primary/50 transition-all"
-                >
-                  <Link href="#" className="flex items-center gap-3">
-                    <div className="text-2xl">🤖</div>
-                    <div className="text-left">
-                      <div className="text-xs">Get it on</div>
-                      <div className="text-sm font-bold">Google Play</div>
-                    </div>
-                  </Link>
-                </Button>
-                <Button 
-                  asChild 
-                  variant="outline" 
-                  className="w-full sm:w-auto px-6 py-5 rounded-xl border-2 hover:border-primary/50 transition-all"
-                >
-                  <Link href="#" className="flex items-center gap-3">
-                    <div className="text-2xl">💻</div>
-                    <div className="text-left">
-                      <div className="text-xs">Use on</div>
-                      <div className="text-sm font-bold">Web Browser</div>
-                    </div>
-                  </Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          {/* Mobile Bottom Links - Only show on small screens */}
-          <div className="mt-6 pt-6 border-t border-border/50 lg:hidden">
-            <div className="grid grid-cols-2 gap-4 text-xs">
-              <Link href="/sitemap" className="text-muted-foreground hover:text-foreground">
-                Sitemap
-              </Link>
-              <Link href="/affiliates" className="text-muted-foreground hover:text-foreground">
-                Affiliate Program
-              </Link>
-              <Link href="/investors" className="text-muted-foreground hover:text-foreground">
-                Investors
-              </Link>
-              <Link href="/status" className="text-muted-foreground hover:text-foreground">
-                System Status
-              </Link>
             </div>
           </div>
         </div>
