@@ -152,7 +152,7 @@ export default function StudentDashboardClient({ initialProfile }: { initialProf
               <div className="text-center py-16 border-2 border-dashed rounded-2xl bg-zinc-50/50 dark:bg-zinc-900/20 border-zinc-200 dark:border-zinc-800">
                 <BookOpen className="h-12 w-12 text-zinc-300 dark:text-zinc-700 mx-auto mb-4" />
                 <p className="text-zinc-500 dark:text-zinc-400">No bookings found. Start learning today!</p>
-                <Link href="/tutors">
+                <Link href="/browse-tutors">
                     <Button className="mt-6 bg-indigo-600" size="sm">Find a Tutor</Button>
                 </Link>
               </div>
