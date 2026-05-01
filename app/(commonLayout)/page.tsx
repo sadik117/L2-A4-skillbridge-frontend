@@ -2,6 +2,7 @@ import FeaturedTutors from "@/components/layouts/FeaturedTutors";
 import { HeroSection } from "@/components/layouts/HeroSection";
 import HowItWorksSection from "@/components/layouts/HowItWorksSection";
 import NewsLetterSection from "@/components/layouts/NewsLetterSection";
+import OurGoal from "@/components/layouts/OurGoal";
 import PopularSubjectsSection from "@/components/layouts/PopularSubjectsSection";
 import { Metadata } from "next";
 
@@ -19,6 +20,7 @@ export default function Home() {
       <FeaturedTutors></FeaturedTutors>
       <PopularSubjectsSection></PopularSubjectsSection>
       <HowItWorksSection></HowItWorksSection>
+      <OurGoal></OurGoal>
       <NewsLetterSection></NewsLetterSection>
     </div>
   );
