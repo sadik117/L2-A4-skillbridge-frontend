@@ -261,16 +261,6 @@ export default function AvailabilityPage() {
               >
                 {/* Background Gradient Effect */}
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-purple-600/5 dark:from-primary/10 dark:to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                
-                {/* Day Badge */}
-                <div className="absolute top-4 right-4 z-10">
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 dark:bg-primary/20 border border-primary/20 dark:border-primary/30">
-                    <Calendar className="h-3 w-3 text-primary" />
-                    <span className="text-xs font-medium text-primary">
-                      {getDayLabel(slot.startTime)}
-                    </span>
-                  </div>
-                </div>
 
                 <div className="p-6 sm:p-7 lg:p-8">
                   {/* Tutor Info */}
