@@ -1,310 +1,123 @@
-SkillBridge
-
-Enterprise-Grade Tutor Booking Platform
-
-SkillBridge is a scalable full-stack tutor marketplace platform designed to connect students with professional tutors through a structured booking system, real-time availability management, and secure authentication.
-
-Built using modern production-ready technologies with a clean architecture and modular design.
-
-
-Overview:
-
-SkillBridge enables:
-
-Students to discover tutors, view detailed profiles, and book sessions
-
-Tutors to manage availability, pricing, and bookings
-
-Secure authentication with role-based access control
-
-Clean, scalable backend architecture with Prisma ORM
-
-The platform is structured with clear separation between frontend and backend services, making it maintainable and extensible.
-
-
-System Architecture:
-
-Client (Next.js App Router)
-        ↓
-Better Auth (Cookie-based Auth)
-        ↓
-Express API (REST)
-        ↓
-Prisma ORM
-        ↓
-PostgreSQL Database
-
-
-Technology Stack:
-
-Frontend
-
-Next.js 14 (App Router)
-
-TypeScript
-
-Tailwind CSS
-
-Shadcn UI
-
-TanStack React Form
-
-Lucide Icons
-
-Better Auth (Client SDK)
-
-
-Backend
-
-Node.js
-
-Express.js
-
-Prisma ORM
-
-PostgreSQL
-
-Better Auth (Server)
-
-Infrastructure
-
-Vercel (Frontend Deployment)
-
-Vercel / Custom Hosting (Backend)
-
-PostgreSQL (Production Database)
-
-
-Core Features:
-
-Authentication & Authorization
-
-Secure HTTP-only cookie-based authentication
-
-Role-based access control (Student / Tutor / Admin)
-
-Cross-site cookie handling for production deployments
-
-Student Capabilities
-
-Browse featured tutors
-
-Filter by category
-
-View tutor profiles
-
-View real-time availability
-
-Book sessions
-
-Manage bookings dashboard
-
-Tutor Capabilities
-
-Create and manage tutor profile
-
-Set hourly rate
-
-Define recurring availability slots
-
-Track bookings
-
-Tutor dashboard interface
-
-Availability System
-
-Structured availability slot management
-
-Prevents double-booking
-
-Booking state tracking (isBooked flag)
-
-
-📂 Repository Structure
-skillbridge/
-│
-├── frontend/
-
-│   ├── app/
-
-│   │   ├── (commonLayout)/
-
-│   │   ├── (dashboardLayout)/
-
-│   │   ├── tutor/
-
-│   │   └── api/
-
-│   ├── components/
-
-│   ├── lib/
-
-│   └── types/
-│
-├── backend/
-
-│   ├── src/
-
-│   │   ├── modules/
-
-│   │   │   ├── auth/
-
-│   │   │   ├── tutor/
-
-│   │   │   ├── booking/
-
-│   │   │   └── category/
-
-│   │   ├── routes/
-
-│   │   ├── services/
-
-│   │   ├── middlewares/
-
-│   │   └── utils/
-
-│   └── prisma/
-
-│       └── schema.prisma
-
-
-Database Design Example:
- 
-AvailabilitySlot Model
-
-model AvailabilitySlot {
-
-  id String @id @default(uuid())
-
-  tutorProfileId String
-  
-  tutorProfile   TutorProfile @relation(fields: [tutorProfileId], references: [id], onDelete: Cascade)
-
-  isBooked Boolean @default(false)
-
-  startTime  DateTime
-  
-  endTime    DateTime
-  
-  daysOfWeek String[]
-
-  createdAt DateTime @default(now())
-  
-  updatedAt DateTime @updatedAt
-
-  @@map("availability_slot")
-}
-
-
-Design considerations:
-
-Cascade delete for referential integrity
-
-Boolean booking lock to prevent race conditions
-
-Structured time handling with DateTime
-
-
-Local Development Setup:
-1. Clone Repository
-git clone https://github.com/your-username/skillbridge.git
-cd skillbridge
-
-2. Backend Setup
-cd backend
+# 🌉 SkillBridge | Enterprise-Grade Tutor Booking Platform
+
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
+[![Prisma](https://img.shields.io/badge/Prisma-7.3-2D3748?style=for-the-badge&logo=prisma)](https://www.prisma.io/)
+[![Redis](https://img.shields.io/badge/Redis-Caching-DC382D?style=for-the-badge&logo=redis)](https://redis.io/)
+[![Better Auth](https://img.shields.io/badge/Auth-Better--Auth-blueviolet?style=for-the-badge)](https://www.better-auth.com/)
+
+**SkillBridge** is a high-performance, full-stack marketplace designed to connect students with professional tutors through a structured booking system, real-time availability management, and secure authentication. It features a cinematic UI, AI-powered recommendations, and a robust backend architecture.
+
+---
+
+## ✨ Key Features
+
+### 🤖 AI-Powered Tutor Recommendations (RAG)
+Integrated a sophisticated **Retrieval-Augmented Generation (RAG)** service that analyzes student needs and recommends the most suitable tutors from our database in real-time.
+
+### 🎭 Cinematic Motion & Glassmorphism
+*   **Atmospheric UI:** Deep indigo palettes with animated gradient orbs and glassmorphic surfaces.
+*   **Interactive UX:** Lens-magnifier zoom on tutor profiles and smooth layout transitions.
+
+### 🔐 Enterprise Security & Auth
+*   **Google Social Login:** Seamless authentication powered by `Better-Auth`.
+*   **RBAC:** Strict Role-Based Access Control for Students, Tutors, and Admins.
+*   **Secure Cookies:** Production-ready HTTP-only cookie management with cross-site handling.
+
+### 📧 Newsletter & Engagement
+Integrated a custom subscription service with form validation (Zod) and real-time feedback (Sonner) to keep students engaged with the latest tutor updates.
+
+### 📅 Advanced Tutor Management
+Tutors can manage their availability, set hourly rates, and track bookings through a dedicated, motion-rich dashboard.
+
+### ⚡ Performance & Scalability
+*   **Redis Caching:** Lightning-fast data retrieval for frequently accessed tutor profiles.
+*   **Prisma ORM:** Type-safe database interactions with PostgreSQL.
+*   **Next.js App Router:** Optimized server-side rendering and client-side navigation.
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **Framework:** Next.js 15 (App Router)
+- **Library:** React 19
+- **Styling:** Tailwind CSS 4.0 + Shadcn/UI
+- **Animations:** Framer Motion
+- **State Management:** Zustand
+- **Forms:** React Hook Form + Zod
+
+### Backend
+- **Runtime:** Node.js
+- **Server:** Express.js 5.0
+- **Database:** PostgreSQL (via Prisma ORM)
+- **Caching:** Redis
+- **Auth:** Better-Auth
+
+---
+
+## 🏗️ System Architecture
+
+```mermaid
+graph TD
+    A[User Browser] -->|Next.js App| B(Frontend Service)
+    B -->|Better Auth| C{Auth Middleware}
+    C -->|Authorized| D[Express REST API]
+    D -->|Query| E[Redis Cache]
+    E -->|Miss| F[Prisma ORM]
+    F -->|Fetch| G[(PostgreSQL)]
+    D -->|Vector Search| H[AI RAG Service]
+    H -->|Analyze| I[Tutor Database]
+```
+
+---
+
+## 🚀 Getting Started
+
+### 1. Prerequisites
+- Node.js (v20+)
+- PostgreSQL Database
+- Redis Instance
+
+### 2. Installation
+```bash
+# Clone the repository
+git clone https://github.com/sadik117/L2-A4-skillbridge-frontend.git
+
+# Install Frontend Dependencies
+cd assignment-4-frontend
 npm install
 
-
-Create .env:
-
-DATABASE_URL=postgresql://user:password@localhost:5432/skillbridge
-BETTER_AUTH_SECRET=your_secret_key
-FRONTEND_URL=http://localhost:3000
-
-
-Run migrations:
-
-npx prisma generate
-npx prisma migrate dev
-
-
-Start server:
-
-npm run dev
-
-
-Backend runs at:
-
-http://localhost:5000
-
-3. Frontend Setup
-cd frontend
+# Install Backend Dependencies
+cd ../assignment-4-backend
 npm install
+```
 
+### 3. Environment Setup
+Create a `.env` file in the backend and a `.env.local` in the frontend directory based on the provided examples.
 
-Create .env.local:
-
-NEXT_PUBLIC_API_URL=http://localhost:5000
-
-
-Start frontend:
-
+### 4. Run the Platform
+```bash
+# Backend
+cd assignment-4-backend
 npm run dev
 
+# Frontend
+cd assignment-4-frontend
+npm run dev
+```
 
-Frontend runs at:
+---
 
-http://localhost:3000
+## 📸 Visual Showcase
 
+> [!TIP]
+> The platform uses a curated HSL color palette to ensure a premium look across all devices. The dark mode is optimized for accessibility and visual comfort.
 
- Security Considerations:
-
-HTTP-only cookies
-
-SameSite=None for cross-site deployment
-
-Secure flag enabled in production
-
-Credentials included in client requests
-
-Role-based route protection
-
-Prisma query abstraction for SQL injection protection
+---
 
 
- Scalability Considerations:
-
-Modular backend architecture
-
-Service layer separation
-
-Prisma for schema migrations & type safety
-
-Route grouping in Next.js for layout isolation
-
-
-
-Future Enhancements:
-
-Payment gateway integration
-
-Advanced search & filtering
-
-WebSocket real-time updates
-
-Caching layer (Redis)
-
-Calendar synchronization
-
-Email notifications
-
-
-Known Edge Cases Handled:
-
-Cross-site cookie rejection (SameSite policy)
-
-Parallel layout routing conflicts in App Router
-
-Invalid API response shape handling
-
-Booking duplication prevention
+<p align="center">
+  Built with ❤️ by <a href="https://github.com/sadik117">sadik117</a>
+</p>
