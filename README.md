@@ -81,6 +81,8 @@ graph TD
 - Redis Instance
 
 ### 2. Installation
+
+### Backend Repository: https://github.com/sadik117/L2-A4-skillbridge-backend
 ```bash
 # Clone the repository
 git clone https://github.com/sadik117/L2-A4-skillbridge-frontend.git
@@ -93,8 +95,6 @@ npm install
 cd ../assignment-4-backend
 npm install
 ```
-
-### Backend Repository: https://github.com/sadik117/L2-A4-skillbridge-backend
 
 ### 3. Environment Setup
 Create a `.env` file in the backend and a `.env.local` in the frontend directory based on the provided examples.
