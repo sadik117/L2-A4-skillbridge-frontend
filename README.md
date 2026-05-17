@@ -10,6 +10,8 @@
 **SkillBridge** is a high-performance, full-stack marketplace designed to connect students with professional tutors through a structured booking system, real-time availability management, and secure authentication. It features a cinematic UI, AI-powered recommendations, and a robust backend architecture.
 
 ---
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit-blue?style=for-the-badge&logo=vercel)](https://skill-bridge-connect.vercel.app)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-black?style=for-the-badge&logo=github)](https://github.com/sadik117/L2-A4-skillbridge-backend)
 
 ## ✨ Key Features
 
@@ -82,7 +84,6 @@ graph TD
 
 ### 2. Installation
 
-### Backend Repository: https://github.com/sadik117/L2-A4-skillbridge-backend
 ```bash
 # Clone the repository
 git clone https://github.com/sadik117/L2-A4-skillbridge-frontend.git
